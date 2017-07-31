@@ -4,4 +4,9 @@
     <string name="create">Create</string>
     <string name="no_permission_message">You can not set image without permissions</string>
     <string name="no_image_message">Please select the image</string>
+    <string name="empty_fields_message">Please fill all fields</string>
+    <string name="create_gift_image_message">Uploading image</string>
+    <string name="create_gift_message">Creating gift</string>
+    <string name="image_upload_error">Can not upload image, try again</string>
+    <string name="gift_create_error">Can not create gift, try again</string>
 </resources>
