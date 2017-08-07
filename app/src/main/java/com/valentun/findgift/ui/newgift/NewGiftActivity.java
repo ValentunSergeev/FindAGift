@@ -1,7 +1,6 @@
-package com.valentun.findgift;
+package com.valentun.findgift.ui.newgift;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,17 +11,19 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Spinner;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.valentun.findgift.Constants;
+import com.valentun.findgift.R;
+import com.valentun.findgift.models.Gift;
+import com.valentun.findgift.ui.abstracts.ApiActivity;
+import com.valentun.findgift.utils.BitmapUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,25 +31,29 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
 
-public class NewGiftActivity extends AppCompatActivity {
+import static android.widget.ImageView.ScaleType.*;
+import static com.valentun.findgift.Constants.PERMISSIONS;
+import static com.valentun.findgift.utils.TextUtils.isEmpty;
+
+public class NewGiftActivity extends ApiActivity {
     private static final int GALLERY_REQUEST = 1339;
     private static final int PERMISSIONS_REQUEST_CODE = 1;
-    private static final String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
-    @BindView(R.id.new_image)
-    ImageView newImage;
-    @BindView(R.id.new_name)
-    TextView newName;
-    @BindView(R.id.new_price)
-    TextView newPrice;
-    @BindView(R.id.new_container)
-    View container;
+    @BindView(R.id.new_image) ImageView newImage;
+    @BindView(R.id.new_name) EditText newName;
+    @BindView(R.id.new_description) EditText newDescription;
+    @BindView(R.id.new_price) EditText newPrice;
+    @BindView(R.id.money_type) Spinner spinner;
 
     private Bitmap image;
-    private ProgressDialog progressDialog;
-    private String name, price, imageURL;
-    private DatabaseReference database;
+    private String[] spinnerKeys;
+
+    private String imageURL;
+    private Gift gift;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,33 +62,28 @@ public class NewGiftActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        database = FirebaseDatabase.getInstance().getReference();
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
+        spinnerKeys = getResources().getStringArray(R.array.money_types_keys);
     }
 
     @OnClick(R.id.new_image)
     public void setImageClicked(View v) {
-        if (hasReadPermissons()) {
+        if (hasReadPermissions()) {
             makeGalleryRequest();
         } else {
-            ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSIONS_REQUEST_CODE);
         }
     }
 
-    @OnClick(R.id.create_button)
+    @OnClick(R.id.new_gift_submit)
     public void createButtonClicked(View v) {
         if (image == null) {
             Snackbar.make(container, R.string.no_image_message, Snackbar.LENGTH_SHORT).show();
             return;
         }
 
-        name = newName.getText().toString();
-        price = newPrice.getText().toString();
+        createRequestBodyObject();
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(price)) {
+        if (isEmpty(gift.getName(), gift.getPrice(), gift.getDescription())) {
             Snackbar.make(container, getString(R.string.empty_fields_message), Snackbar.LENGTH_SHORT).show();
             return;
         }
@@ -95,15 +95,27 @@ public class NewGiftActivity extends AppCompatActivity {
         } else {
             uploadGift();
         }
+    }
 
-        //TODO loadTask
+    private void createRequestBodyObject() {
+        String name = newName.getText().toString();
+        String price = newPrice.getText().toString();
+        String description = newDescription.getText().toString();
+        String priceType = spinnerKeys[spinner.getSelectedItemPosition()];
+
+        gift = new Gift()
+                .setName(name)
+                .setDescription(description)
+                .setImageUrl(imageURL)
+                .setPrice(price)
+                .setPriceType(priceType);
     }
 
     private void uploadImage() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference images = storage.getReference()
                 .child(Constants.Firebase.IMAGE_STORAGE_KEY);
-        StorageReference imageRef = images.child(name + Constants.Firebase.IMAGE_FORMAT);
+        StorageReference imageRef = images.child(Gift.generateImageName());
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -114,6 +126,7 @@ public class NewGiftActivity extends AppCompatActivity {
             Uri uri = taskSnapshot.getDownloadUrl();
             showProgress(getString(R.string.create_gift_message));
             imageURL = uri.toString();
+            gift.setImageUrl(imageURL);
             uploadGift();
         }).addOnFailureListener(e -> {
             progressDialog.dismiss();
@@ -122,24 +135,21 @@ public class NewGiftActivity extends AppCompatActivity {
     }
 
     private void uploadGift() {
-        Gift gift = new Gift(name, price, imageURL);
-        String id = Gift.generateId(gift);
+        apiClient.createGift(gift).enqueue(new ApiCallback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+               if (response.isSuccessful()) {
+                   Intent intent = new Intent();
+                   intent.setAction("ThisFixDataLost");
+                   setResult(RESULT_OK, intent);
 
-        database.child(Constants.Firebase.TABLE_NAME)
-                .child(id).setValue(gift).addOnSuccessListener(aVoid -> {
-            progressDialog.dismiss();
-            finish();
-        })
-                .addOnFailureListener(e -> {
-                    progressDialog.dismiss();
-                    Snackbar.make(container, R.string.gift_create_error, Snackbar.LENGTH_SHORT).show();
-                });
-    }
-
-    private void showProgress(String string) {
-        if (progressDialog.isShowing()) progressDialog.dismiss();
-        progressDialog.setTitle(string);
-        progressDialog.show();
+                   finish();
+               }
+                else {
+                   showSnackbarMessage(getString(R.string.create_gift_error, response.errorBody()));
+               }
+            }
+        });
     }
 
     @Override
@@ -160,6 +170,7 @@ public class NewGiftActivity extends AppCompatActivity {
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             Uri uri = data.getData();
             image = getImage(uri);
+            newImage.setScaleType(CENTER_CROP);
             newImage.setImageBitmap(image);
         }
     }
@@ -173,14 +184,14 @@ public class NewGiftActivity extends AppCompatActivity {
     private Bitmap getImage(Uri uri) {
         try {
             Bitmap original = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-            return Utils.getImage(original, this, Constants.IMAGE_SIZE);
+            return BitmapUtils.cropImage(original);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private boolean hasReadPermissons() {
+    private boolean hasReadPermissions() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED;
     }

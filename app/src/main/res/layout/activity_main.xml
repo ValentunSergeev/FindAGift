@@ -4,12 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.valentun.findgift.MainActivity">
+    android:id="@+id/main_container"
+    tools:context="com.valentun.findgift.ui.main.MainActivity">
+
+    <ProgressBar
+        android:id="@+id/main_progress"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/new_gift_button"
@@ -17,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:onClick="newButtonClicked"
         app:fabSize="normal"
-        app:srcCompat="@drawable/ic_add_white_24dp"
-        android:onClick="newButtonClicked"/>
+        app:srcCompat="@drawable/ic_add_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

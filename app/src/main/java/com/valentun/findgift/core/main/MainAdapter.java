@@ -1,4 +1,4 @@
-package com.valentun.findgift;
+package com.valentun.findgift.core.main;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,22 +7,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.squareup.picasso.Picasso;
+import com.valentun.findgift.R;
+import com.valentun.findgift.models.Gift;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
-    private ArrayList<Gift> data;
+    private List<Gift> data;
 
-    public MainAdapter(ArrayList<Gift> data) {
+    public MainAdapter(List<Gift> data) {
         this.data = data;
     }
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.main_recycler_item, parent, false);
+        View view = inflater.inflate(R.layout.gift_recycler_item, parent, false);
         return new MainViewHolder(view);
     }
 
@@ -39,19 +43,25 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
     class MainViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.main_item_icon) ImageView image;
-        @BindView(R.id.item_price) TextView price;
+        @BindView(R.id.new_price) TextView price;
         @BindView(R.id.item_name) TextView name;
 
         public MainViewHolder(View itemView) {
             super(itemView);
 
-            ButterKnife.bind(itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         void bind(int position) {
             Gift gift = data.get(position);
 
+            price.setText(gift.getPrice());
+            name.setText(gift.getName());
 
+            Picasso.with(itemView.getContext())
+                    .load(gift.getImageUrl())
+                    .placeholder(R.color.placeholderColor)
+                    .into(image);
         }
     }
 }
