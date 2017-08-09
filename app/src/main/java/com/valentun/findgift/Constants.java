@@ -20,6 +20,8 @@ public class Constants {
         public static final String DEFAULT_STRING_VALUE = "null";
     }
 
+    public static final int FAB_SCROLL_THRESHOLD = 5;
+
     public static final String ACCESS_TOKEN_KEY = "Access-Token";
     public static final String CLIENT_KEY = "Client";
     public static final String UID_KEY = "Uid";

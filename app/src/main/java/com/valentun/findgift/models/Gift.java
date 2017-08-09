@@ -9,13 +9,14 @@ import com.valentun.findgift.Constants;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Gift {
+    private long id;
     private String name;
     private String description;
     private String price;
     private int rating;
 
     @JsonProperty("price_type")
-    private String priceType;
+    private int priceType;
 
     @JsonProperty("image")
     private String imageUrl;
@@ -23,8 +24,16 @@ public class Gift {
     @JsonProperty("saved")
     private boolean isSaved;
 
-    @JsonProperty("rate_type")
-    private String rateState;
+    @JsonProperty("liked")
+    private boolean isLiked;
+
+    public static String generateImageName() {
+        return "GIFT_" + System.currentTimeMillis() + Constants.Firebase.IMAGE_FORMAT;
+    }
+
+    public String getStringRating() {
+        return String.valueOf(rating);
+    }
 
     public int getRating() {
         return rating;
@@ -42,12 +51,12 @@ public class Gift {
         isSaved = saved;
     }
 
-    public String getRateState() {
-        return rateState;
+    public boolean isLiked() {
+        return isLiked;
     }
 
-    public void setRateState(String rateState) {
-        this.rateState = rateState;
+    public void setIsLiked(boolean isLiked) {
+        this.isLiked = isLiked;
     }
 
     public String getName() {
@@ -77,11 +86,11 @@ public class Gift {
         return this;
     }
 
-    public String getPriceType() {
+    public int getPriceType() {
         return priceType;
     }
 
-    public Gift setPriceType(String priceType) {
+    public Gift setPriceType(int priceType) {
         this.priceType = priceType;
         return this;
     }
@@ -95,7 +104,11 @@ public class Gift {
         return this;
     }
 
-    public static String generateImageName() {
-        return "GIFT_" + System.currentTimeMillis() + Constants.Firebase.IMAGE_FORMAT;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

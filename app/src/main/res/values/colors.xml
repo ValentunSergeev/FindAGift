@@ -9,7 +9,9 @@
     <color name="secondary_text">#757575</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
-    <color name="borderColor">#EBEBEB</color>
-    <color name="ic_color">#FFC0C0C0</color>
-    <color name="placeholderColor">#FFF2F2F2</color>
+    <color name="border_color">#EBEBEB</color>
+    <color name="ic_color">#C0C0C0</color>
+    <color name="placeholder_color">#F2F2F2</color>
+    <color name="vote_down_color">#E79D36</color>
+    <color name="vote_up_color">#7CB342</color>
 </resources>

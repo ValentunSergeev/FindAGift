@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -35,7 +37,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static android.widget.ImageView.ScaleType.*;
+import static android.widget.ImageView.ScaleType.CENTER_CROP;
 import static com.valentun.findgift.Constants.PERMISSIONS;
 import static com.valentun.findgift.utils.TextUtils.isEmpty;
 
@@ -43,14 +45,19 @@ public class NewGiftActivity extends ApiActivity {
     private static final int GALLERY_REQUEST = 1339;
     private static final int PERMISSIONS_REQUEST_CODE = 1;
 
-    @BindView(R.id.new_image) ImageView newImage;
-    @BindView(R.id.new_name) EditText newName;
-    @BindView(R.id.new_description) EditText newDescription;
-    @BindView(R.id.new_price) EditText newPrice;
-    @BindView(R.id.money_type) Spinner spinner;
+    @BindView(R.id.new_image)
+    ImageView newImage;
+    @BindView(R.id.new_name)
+    EditText newName;
+    @BindView(R.id.new_description)
+    EditText newDescription;
+    @BindView(R.id.new_price)
+    EditText newPrice;
+    @BindView(R.id.money_type)
+    Spinner spinner;
 
     private Bitmap image;
-    private String[] spinnerKeys;
+    private int[] spinnerKeys;
 
     private String imageURL;
     private Gift gift;
@@ -62,7 +69,7 @@ public class NewGiftActivity extends ApiActivity {
 
         ButterKnife.bind(this);
 
-        spinnerKeys = getResources().getStringArray(R.array.money_types_keys);
+        spinnerKeys = getResources().getIntArray(R.array.money_types_keys);
     }
 
     @OnClick(R.id.new_image)
@@ -101,7 +108,7 @@ public class NewGiftActivity extends ApiActivity {
         String name = newName.getText().toString();
         String price = newPrice.getText().toString();
         String description = newDescription.getText().toString();
-        String priceType = spinnerKeys[spinner.getSelectedItemPosition()];
+        int priceType = spinnerKeys[spinner.getSelectedItemPosition()];
 
         gift = new Gift()
                 .setName(name)
@@ -122,32 +129,38 @@ public class NewGiftActivity extends ApiActivity {
         byte[] data = stream.toByteArray();
 
         UploadTask uploadTask = imageRef.putBytes(data);
-        uploadTask.addOnSuccessListener(taskSnapshot -> {
-            Uri uri = taskSnapshot.getDownloadUrl();
-            showProgress(getString(R.string.create_gift_message));
-            imageURL = uri.toString();
-            gift.setImageUrl(imageURL);
-            uploadGift();
-        }).addOnFailureListener(e -> {
-            progressDialog.dismiss();
-            Snackbar.make(container, R.string.image_upload_error, Snackbar.LENGTH_SHORT).show();
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri uri = taskSnapshot.getDownloadUrl();
+                showProgress(getString(R.string.create_gift_message));
+                imageURL = uri.toString();
+                gift.setImageUrl(imageURL);
+                uploadGift();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Snackbar.make(container, R.string.image_upload_error, Snackbar.LENGTH_SHORT).show();
+            }
         });
+
     }
 
     private void uploadGift() {
         apiClient.createGift(gift).enqueue(new ApiCallback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-               if (response.isSuccessful()) {
-                   Intent intent = new Intent();
-                   intent.setAction("ThisFixDataLost");
-                   setResult(RESULT_OK, intent);
+                if (response.isSuccessful()) {
+                    Intent intent = new Intent();
+                    intent.setAction("ThisFixDataLost");
+                    setResult(RESULT_OK, intent);
 
-                   finish();
-               }
-                else {
-                   showSnackbarMessage(getString(R.string.create_gift_error, response.errorBody()));
-               }
+                    finish();
+                } else {
+                    showSnackbarMessage(getString(R.string.create_gift_error, response.errorBody()));
+                }
             }
         });
     }

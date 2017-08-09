@@ -2,6 +2,7 @@ package com.valentun.findgift.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -22,6 +23,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import static com.valentun.findgift.Constants.FAB_SCROLL_THRESHOLD;
 //--------------------------------------
 //TODO hide/close fab when recyclerView is scrolling down/up
 //TODO land layout for new_gift
@@ -41,6 +44,7 @@ public class MainActivity extends ApiActivity {
 
     @BindView(R.id.main_recycler) RecyclerView recyclerView;
     @BindView(R.id.main_progress) ProgressBar progressBar;
+    @BindView(R.id.new_gift_button) FloatingActionButton fab;
 
     private static final int NEW_GIFT_REQUEST_CODE = 1;
 
@@ -64,6 +68,16 @@ public class MainActivity extends ApiActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new MainAdapter(null));
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+                if (dy > FAB_SCROLL_THRESHOLD)
+                    fab.hide();
+                else if (dy < -FAB_SCROLL_THRESHOLD)
+                    fab.show();
+            }
+        });
 
         makeRequest();
     }

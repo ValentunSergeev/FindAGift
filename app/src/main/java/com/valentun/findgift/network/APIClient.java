@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface APIClient {
     @POST("auth/")
@@ -23,4 +24,10 @@ public interface APIClient {
 
     @POST("gifts.json")
     Call<ResponseBody> createGift(@Body Gift gift);
+
+    @GET("gifts/{gift}/like")
+    Call<ResponseBody> upVoteGift(@Path("gift") String gift);
+
+    @GET("gifts/{gift}/dislike")
+    Call<ResponseBody> downVoteGift(@Path("gift") String gift);
 }

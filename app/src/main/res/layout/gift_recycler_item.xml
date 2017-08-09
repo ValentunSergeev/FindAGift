@@ -1,61 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/item_name"
-        android:layout_width="wrap_content"
+    <data>
+        <variable
+            name="gift"
+            type="com.valentun.findgift.models.Gift" />
+
+        <variable
+            name="handlers"
+            type="com.valentun.findgift.core.main.MainListHandler" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="0dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintBottom_toBottomOf="@+id/main_item_icon"
-        app:layout_constraintLeft_toRightOf="@+id/main_item_icon"
-        app:layout_constraintTop_toTopOf="@+id/main_item_icon"
-        tools:text="Name" />
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/cornerRadius"
+        app:cardElevation="2dp">
 
-    <ImageView
-        android:id="@+id/main_item_icon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/new_price"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="0dp"
-        android:fontFamily="sans-serif-light"
-        android:textAlignment="viewEnd"
-        android:gravity="end"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintBottom_toBottomOf="@+id/item_name"
-        app:layout_constraintLeft_toRightOf="@id/item_name"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/item_name"
-        app:layout_constraintVertical_bias="0.555"
-        tools:text="100р" />
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/divider"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-</android.support.constraint.ConstraintLayout>
+            <android.support.constraint.Guideline
+                android:id="@+id/horizontal_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.6" />
+
+            <ImageView
+                android:id="@+id/item_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:adjustViewBounds="true"
+                android:background="@color/placeholder_color"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/gift_item_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{handlers::onStarClicked}"
+                android:src="@{gift.saved ? @drawable/ic_star_white_24dp : @drawable/ic_star_border_white_24dp}"
+                app:fabSize="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/item_image"
+                app:layout_constraintHorizontal_bias="0.95"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_image" />
+
+            <TextView
+                android:id="@+id/item_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@{gift.name}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline"
+                tools:text="Gift #1" />
+
+            <TextView
+                android:id="@+id/item_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="top"
+                android:text="@{gift.description}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="@+id/item_name"
+                app:layout_constraintRight_toRightOf="@+id/item_name"
+                app:layout_constraintTop_toBottomOf="@+id/item_name"
+                tools:text="Lorem ipsum doler sit amte concestador. Lorem ipsum doler sit amte concestador. Lorem ipsum doler sit amte concestador." />
+
+            <TextView
+                android:id="@+id/item_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="32dp"
+                android:text="@{gift.price}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@+id/item_description"
+                app:layout_constraintTop_toBottomOf="@+id/item_description"
+                tools:text="100" />
+
+            <TextView
+                android:id="@+id/item_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="0dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@{gift.stringRating}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@color/ic_color"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toBottomOf="@+id/vote_up"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vote_up"
+                tools:text="111" />
+
+            <ImageView
+                android:id="@+id/vote_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="0dp"
+                android:onClick="@{handlers::onVoteUpClicked}"
+                app:layout_constraintBottom_toBottomOf="@+id/item_price"
+                app:layout_constraintRight_toLeftOf="@+id/item_rate"
+                app:layout_constraintTop_toTopOf="@+id/item_price"
+                app:srcCompat="@drawable/ic_heart" />
+
+            <TextView
+                android:id="@+id/item_price_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="@{@stringArray/money_types_values[gift.priceType]}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toBottomOf="@+id/item_price"
+                app:layout_constraintLeft_toRightOf="@+id/item_price"
+                app:layout_constraintTop_toTopOf="@+id/item_price"
+                app:layout_constraintVertical_bias="0.0"
+                tools:text="$" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+</layout>

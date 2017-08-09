@@ -1,14 +1,16 @@
 package com.valentun.findgift.core.main;
 
+import android.databinding.DataBindingUtil;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.valentun.findgift.R;
+import com.valentun.findgift.databinding.GiftRecyclerItemBinding;
 import com.valentun.findgift.models.Gift;
 
 import java.util.List;
@@ -42,25 +44,31 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     }
 
     class MainViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.main_item_icon) ImageView image;
-        @BindView(R.id.new_price) TextView price;
-        @BindView(R.id.item_name) TextView name;
+        @BindView(R.id.item_image) ImageView image;
+        GiftRecyclerItemBinding binding;
 
         public MainViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
+            binding = DataBindingUtil.bind(itemView);
         }
 
         void bind(int position) {
             Gift gift = data.get(position);
 
-            price.setText(gift.getPrice());
-            name.setText(gift.getName());
+            if(gift.isLiked()) {
+                int color = ContextCompat.getColor(itemView.getContext(), R.color.primary);
+                binding.voteUp.setColorFilter(color);
+                binding.itemRate.setTextColor(color);
+            }
+
+            binding.setGift(gift);
+            binding.setHandlers(new MainListHandler(binding, gift));
 
             Picasso.with(itemView.getContext())
                     .load(gift.getImageUrl())
-                    .placeholder(R.color.placeholderColor)
+                    .placeholder(R.color.placeholder_color)
                     .into(image);
         }
     }
