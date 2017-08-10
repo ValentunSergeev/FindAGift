@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">FindGift</string>
 
-    <string name="name_hint">Name</string>
-    <string name="create">Create</string>
-
     <string name="no_permission_message">You can not set image without permissions</string>
 
     <string name="no_image_message">Please select the image</string>
@@ -11,6 +8,12 @@
     <string name="create_gift_image_message">Uploading image</string>
     <string name="create_gift_message">Creating gift</string>
     <string name="image_upload_error">Can not upload image, try again</string>
+    <string name="create_gift_error">Error during gift creation: %s</string>
+    <string name="gift_created_message">Gift was successfully created</string>
+
+    <string name="new_name_hint">Enter a gift name</string>
+    <string name="new_description_hint">Enter a gift desrciption</string>
+    <string name="new_price_hint">Enter a gift price</string>
 
     <string name="auth_email" translatable="false">Email</string>
     <string name="auth_password">Password</string>
@@ -19,9 +22,6 @@
 
     <string name="log_in_process">Logining…</string>
     <string name="register_process">Registering…</string>
-    <string name="description_hint">Description</string>
-    <string name="price_hint">Price</string>
-    <string name="create_gift_error">Error during gift creation: %s</string>
-    <string name="gift_created_message">Gift was successfully created</string>
+
 
 </resources>
