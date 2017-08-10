@@ -11,6 +11,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface APIClient {
     @POST("auth/")
@@ -20,7 +21,7 @@ public interface APIClient {
     Call<ResponseBody> createSession(@Body AuthModel authModel);
 
     @GET("gifts.json")
-    Call<List<Gift>> getGifts();
+    Call<List<Gift>> getGifts(@Query("age") String age, @Query("gender") String gender, @Query("event_type") String eventType);
 
     @POST("gifts.json")
     Call<ResponseBody> createGift(@Body Gift gift);

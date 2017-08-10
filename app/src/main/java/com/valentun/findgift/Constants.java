@@ -20,6 +20,12 @@ public class Constants {
         public static final String DEFAULT_STRING_VALUE = "null";
     }
 
+    public static class SEARCH_PARAMS {
+        public static final String GENDER_ANY = "01";
+        public static final String GENDER_MALE = "0";
+        public static final String GENDER_FEMALE = "1";
+    }
+
     public static final int FAB_SCROLL_THRESHOLD = 5;
 
     public static final String ACCESS_TOKEN_KEY = "Access-Token";

@@ -23,5 +23,11 @@
     <string name="log_in_process">Logining…</string>
     <string name="register_process">Registering…</string>
 
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="male_female">All</string>
 
+    <string name="event_type_birthday">Birthday</string>
+    <string name="event_type_wedding">Wedding</string>
+    <string name="event_type_any">Any</string>
 </resources>

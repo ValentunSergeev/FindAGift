@@ -26,6 +26,7 @@
                 android:value=".ui.main.MainActivity" />
         </activity>
         <activity android:name=".ui.auth.AuthActivity" />
+        <activity android:name=".Test"></activity>
     </application>
 
 </manifest>

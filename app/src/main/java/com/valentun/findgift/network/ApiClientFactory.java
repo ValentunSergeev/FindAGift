@@ -2,6 +2,8 @@ package com.valentun.findgift.network;
 
 import com.valentun.findgift.Constants;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -26,6 +28,9 @@ public class ApiClientFactory {
 
     private static OkHttpClient buildAuthClient() {
         return new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
                 .addInterceptor((new ApiInterceptor()))
                 .build();
     }
