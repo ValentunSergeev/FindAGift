@@ -26,6 +26,12 @@ public class WidgetUtils {
         }
     }
 
+    public static void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)view.getContext()
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     public static int getIntFromEditText(EditText editText) {
         return Integer.parseInt(getTextFromEditText(editText));
     }

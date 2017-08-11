@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -38,6 +39,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.valentun.findgift.Constants.FAB_SCROLL_THRESHOLD;
+import static com.valentun.findgift.utils.WidgetUtils.hideKeyboard;
 //--------------------------------------
 //TODO navDrawer
 //--------------------------------------
@@ -47,7 +49,7 @@ import static com.valentun.findgift.Constants.FAB_SCROLL_THRESHOLD;
 //TODO settings page
 //--------------------------------------
 
-public class MainActivity extends ApiActivity {
+public class MainActivity extends ApiActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final int NEW_GIFT_REQUEST_CODE = 1;
     @BindView(R.id.main_recycler) RecyclerView recyclerView;
@@ -58,8 +60,9 @@ public class MainActivity extends ApiActivity {
     @BindView(R.id.age_search) EditText ageField;
     @BindView(R.id.gender_search) RadioGroup genderField;
     @BindView(R.id.event_search) Spinner eventField;
-    @BindView(R.id.age_clear) ImageView clearAge
-            ;
+    @BindView(R.id.age_clear) ImageView clearAge;
+    @BindView(R.id.gifts_container) SwipeRefreshLayout giftsContainer;
+
     private boolean isExpanded = false, isQueryChanged = false;
     private String selectedGender = null, selectedAge = null, selectedEvent = null;
 
@@ -77,6 +80,18 @@ public class MainActivity extends ApiActivity {
         }
 
         ButterKnife.bind(this);
+
+        giftsContainer.setColorSchemeResources(R.color.primary, R.color.accent);
+        giftsContainer.setOnRefreshListener(this);
+
+        ageField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (!hasFocus) {
+                    WidgetUtils.hideKeyboard(view);
+                }
+            }
+        });
 
         container = findViewById(R.id.main_container);
 
@@ -101,7 +116,13 @@ public class MainActivity extends ApiActivity {
 
     public void clearAgeClicked(View view) {
         ageField.getText().clear();
-        WidgetUtils.hideKeyboard(this);
+        hideKeyboard(this);
+    }
+
+    @Override
+    public void onRefresh() {
+        giftsContainer.setRefreshing(true);
+        makeRequest();
     }
 
     private void setListeners() {
@@ -143,6 +164,7 @@ public class MainActivity extends ApiActivity {
                         recyclerView.setAdapter(new MainAdapter(result));
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
+                        giftsContainer.setRefreshing(false);
                     }
                 });
     }
@@ -175,7 +197,7 @@ public class MainActivity extends ApiActivity {
         @Override
         public void onPreClose() {
             fab.show();
-            WidgetUtils.hideKeyboard(MainActivity.this);
+            hideKeyboard(MainActivity.this);
             if (isQueryChanged) {
                 int id = genderField.getCheckedRadioButtonId();
                 int position = eventField.getSelectedItemPosition();
