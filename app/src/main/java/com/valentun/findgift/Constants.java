@@ -20,10 +20,13 @@ public class Constants {
         public static final String DEFAULT_STRING_VALUE = "null";
     }
 
-    public static class SEARCH_PARAMS {
+    public static class GIFT_PARAMS {
         public static final String GENDER_ANY = "01";
         public static final String GENDER_MALE = "0";
         public static final String GENDER_FEMALE = "1";
+
+        public static final int MIN_AGE_VALUE = 0;
+        public static final int MAX_AGE_VALUE = 150;
     }
 
     public static final int FAB_SCROLL_THRESHOLD = 5;

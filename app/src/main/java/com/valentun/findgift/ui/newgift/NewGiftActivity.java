@@ -11,9 +11,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,10 +25,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.valentun.findgift.Constants;
+import com.valentun.findgift.Constants.GIFT_PARAMS;
 import com.valentun.findgift.R;
 import com.valentun.findgift.models.Gift;
 import com.valentun.findgift.ui.abstracts.ApiActivity;
 import com.valentun.findgift.utils.BitmapUtils;
+import com.valentun.findgift.utils.SearchUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,6 +45,8 @@ import retrofit2.Response;
 import static android.widget.ImageView.ScaleType.CENTER_CROP;
 import static com.valentun.findgift.Constants.PERMISSIONS;
 import static com.valentun.findgift.utils.TextUtils.isEmpty;
+import static com.valentun.findgift.utils.WidgetUtils.getIntFromEditText;
+import static com.valentun.findgift.utils.WidgetUtils.getTextFromEditText;
 
 public class NewGiftActivity extends ApiActivity {
     private static final int GALLERY_REQUEST = 1339;
@@ -53,11 +60,21 @@ public class NewGiftActivity extends ApiActivity {
     EditText newDescription;
     @BindView(R.id.new_price)
     EditText newPrice;
+    @BindView(R.id.new_min_age)
+    EditText newMinAge;
+    @BindView(R.id.new_max_age)
+    EditText newMaxAge;
+
     @BindView(R.id.money_type)
-    Spinner spinner;
+    Spinner newPriceType;
+    @BindView(R.id.new_event)
+    Spinner newEventType;
+
+    @BindView(R.id.new_gender)
+    RadioGroup newGender;
 
     private Bitmap image;
-    private int[] spinnerKeys;
+    private int[] priceTypes, eventTypes;
 
     private String imageURL;
     private Gift gift;
@@ -69,7 +86,11 @@ public class NewGiftActivity extends ApiActivity {
 
         ButterKnife.bind(this);
 
-        spinnerKeys = getResources().getIntArray(R.array.money_types_keys);
+        priceTypes = getResources().getIntArray(R.array.money_types_keys);
+        eventTypes = getResources().getIntArray(R.array.event_type_keys);
+
+        newMinAge.setOnFocusChangeListener(new AgeFocusListener(GIFT_PARAMS.MIN_AGE_VALUE));
+        newMaxAge.setOnFocusChangeListener(new AgeFocusListener(GIFT_PARAMS.MAX_AGE_VALUE));
     }
 
     @OnClick(R.id.new_image)
@@ -105,17 +126,24 @@ public class NewGiftActivity extends ApiActivity {
     }
 
     private void createRequestBodyObject() {
-        String name = newName.getText().toString();
-        String price = newPrice.getText().toString();
-        String description = newDescription.getText().toString();
-        int priceType = spinnerKeys[spinner.getSelectedItemPosition()];
+        String name = getTextFromEditText(newName);
+        String price = getTextFromEditText(newPrice);
+        String description = getTextFromEditText(newDescription);
+        int priceType = priceTypes[newPriceType.getSelectedItemPosition()];
+        int eventType = eventTypes[newEventType.getSelectedItemPosition()];
+        String gender = SearchUtils.getGenderFromButtonId(newGender.getCheckedRadioButtonId());
+        int minAge = getIntFromEditText(newMinAge, GIFT_PARAMS.MIN_AGE_VALUE);
+        int maxAge = getIntFromEditText(newMaxAge, GIFT_PARAMS.MAX_AGE_VALUE);
 
-        gift = new Gift()
-                .setName(name)
+        gift = new Gift().setName(name)
                 .setDescription(description)
                 .setImageUrl(imageURL)
                 .setPrice(price)
-                .setPriceType(priceType);
+                .setPriceType(priceType)
+                .setEventType(eventType)
+                .setGender(gender)
+                .setMaxAge(maxAge)
+                .setMinAge(minAge);
     }
 
     private void uploadImage() {
@@ -207,5 +235,21 @@ public class NewGiftActivity extends ApiActivity {
     private boolean hasReadPermissions() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private class AgeFocusListener implements OnFocusChangeListener {
+        private int defaultValue;
+
+        private AgeFocusListener(int value) {
+            defaultValue = value;
+        }
+
+        @Override
+        public void onFocusChange(View view, boolean isFocused) {
+            EditText ageText = (EditText) view;
+            String text = ageText.getText().toString();
+            if (!isFocused && TextUtils.isEmpty(text))
+                ageText.setText(String.valueOf(defaultValue));
+        }
     }
 }

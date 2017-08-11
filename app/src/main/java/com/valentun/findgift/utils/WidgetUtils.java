@@ -8,6 +8,7 @@ import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class WidgetUtils {
@@ -23,5 +24,19 @@ public class WidgetUtils {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public static int getIntFromEditText(EditText editText) {
+        return Integer.parseInt(getTextFromEditText(editText));
+    }
+
+    public static int getIntFromEditText(EditText editText, int defaultValue) {
+        String text = getTextFromEditText(editText);
+        if (TextUtils.isEmpty(text)) return defaultValue;
+        return Integer.parseInt(text);
+    }
+
+    public static String getTextFromEditText(EditText editText) {
+        return editText.getText().toString();
     }
 }

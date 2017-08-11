@@ -41,9 +41,6 @@ import static com.valentun.findgift.Constants.FAB_SCROLL_THRESHOLD;
 //--------------------------------------
 //TODO navDrawer
 //--------------------------------------
-//TODO query parameters - server and app(add slide panel, modify activity&adapter)
-//--------------------------------------
-//TODO Like and dislike functionality
 //TODO Save(star) functionality
 //--------------------------------------
 //TODO credentials page

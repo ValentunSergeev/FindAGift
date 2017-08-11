@@ -14,20 +14,30 @@
     <string name="new_name_hint">Enter a gift name</string>
     <string name="new_description_hint">Enter a gift desrciption</string>
     <string name="new_price_hint">Enter a gift price</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="dash" translatable="false">-</string>
 
     <string name="auth_email" translatable="false">Email</string>
     <string name="auth_password">Password</string>
-    <string name="login_submit">Log in</string>
+    <string name="login_submit">Login</string>
     <string name="register_submit">Register</string>
 
-    <string name="log_in_process">Logining…</string>
+    <string name="log_in_process">Authorizing…</string>
     <string name="register_process">Registering…</string>
 
-    <string name="male">Male</string>
-    <string name="female">Female</string>
-    <string name="male_female">All</string>
+    <string name="target_age">Age</string>
+
+    <string name="event">Event</string>
+
+    <string name="gender">Gender</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="gender_any">Any</string>
 
     <string name="event_type_birthday">Birthday</string>
     <string name="event_type_wedding">Wedding</string>
     <string name="event_type_any">Any</string>
+
+    <string name="search_params">Search params</string>
 </resources>

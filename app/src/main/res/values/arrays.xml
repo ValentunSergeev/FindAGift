@@ -20,9 +20,9 @@
         <item>01</item>
     </string-array>
     <string-array name="gender_values">
-        <item>@string/male</item>
-        <item>@string/female</item>
-        <item>@string/male_female</item>
+        <item>@string/gender_male</item>
+        <item>@string/gender_female</item>
+        <item>@string/gender_any</item>
     </string-array>
 
     <string-array  name="event_type_values">
@@ -30,9 +30,9 @@
         <item>@string/event_type_birthday</item>
         <item>@string/event_type_wedding</item>
     </string-array>
-    <string-array name="event_type_keys">
+    <integer-array name="event_type_keys">
         <item>-1</item>
         <item>0</item>
         <item>1</item>
-    </string-array>
+    </integer-array>
 </resources>

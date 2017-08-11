@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="age_range_min">0</integer>
+    <integer name="age_range_max">150</integer>
+    <integer name="age_tick_interval">10</integer>
+</resources>

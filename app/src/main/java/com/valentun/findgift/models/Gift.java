@@ -14,6 +14,16 @@ public class Gift {
     private String description;
     private String price;
     private int rating;
+    private String gender;
+
+    @JsonProperty("min_age")
+    private int minAge;
+
+    @JsonProperty("max_age")
+    private int maxAge;
+
+    @JsonProperty("event_type")
+    private int eventType;
 
     @JsonProperty("price_type")
     private int priceType;
@@ -110,5 +120,41 @@ public class Gift {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public Gift setGender(String gender) {
+        this.gender = gender;
+        return this;
+    }
+
+    public int getMinAge() {
+        return minAge;
+    }
+
+    public Gift setMinAge(int minAge) {
+        this.minAge = minAge;
+        return this;
+    }
+
+    public int getMaxAge() {
+        return maxAge;
+    }
+
+    public Gift setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
+        return this;
+    }
+
+    public int getEventType() {
+        return eventType;
+    }
+
+    public Gift setEventType(int eventType) {
+        this.eventType = eventType;
+        return this;
     }
 }
