@@ -10,7 +10,7 @@ import com.valentun.findgift.databinding.GiftRecyclerItemBinding;
 import com.valentun.findgift.models.Gift;
 import com.valentun.findgift.network.APIClient;
 import com.valentun.findgift.network.ApiClientFactory;
-import com.valentun.findgift.network.FailureCallback;
+import com.valentun.findgift.network.NotifyCallback;
 
 @SuppressWarnings("unchecked")
 public class MainListHandler {
@@ -69,11 +69,11 @@ public class MainListHandler {
 
     private void startUpVoteRequest() {
         client.upVoteGift(String.valueOf(gift.getId()))
-                .enqueue(new FailureCallback(binding.getRoot()));
+                .enqueue(new NotifyCallback(binding.getRoot()));
     }
 
     private void startDownVoteRequest() {
         client.downVoteGift(String.valueOf(gift.getId()))
-                .enqueue(new FailureCallback(binding.getRoot()));
+                .enqueue(new NotifyCallback(binding.getRoot()));
     }
 }

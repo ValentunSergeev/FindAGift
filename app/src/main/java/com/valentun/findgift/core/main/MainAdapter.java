@@ -39,15 +39,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
     @Override
     public int getItemCount() {
-        if(data == null) return 0;
+        if (data == null) return 0;
         return data.size();
     }
 
     class MainViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.item_image) ImageView image;
+        @BindView(R.id.item_image)
+        ImageView image;
         GiftRecyclerItemBinding binding;
 
-        public MainViewHolder(View itemView) {
+        MainViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
@@ -57,11 +58,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         void bind(int position) {
             Gift gift = data.get(position);
 
-            if(gift.isLiked()) {
-                int color = ContextCompat.getColor(itemView.getContext(), R.color.primary);
-                binding.voteUp.setColorFilter(color);
-                binding.itemRate.setTextColor(color);
-            }
+            int colorId = gift.isLiked() ? R.color.primary : R.color.ic_color;
+            int color = ContextCompat.getColor(itemView.getContext(), colorId);
+
+            binding.voteUp.setColorFilter(color);
+            binding.itemRate.setTextColor(color);
 
             binding.setGift(gift);
             binding.setHandlers(new MainListHandler(binding, gift));

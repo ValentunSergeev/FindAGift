@@ -10,8 +10,8 @@ import retrofit2.Response;
  * Created by Valentun on 09.08.2017.
  */
 
-public class FailureCallback extends BaseCallback {
-    public FailureCallback(View container) {
+public class NotifyCallback extends BaseCallback {
+    public NotifyCallback(View container) {
         super(container);
     }
 
