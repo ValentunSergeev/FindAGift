@@ -114,7 +114,7 @@ public class AuthActivity extends ApiActivity {
                 startActivity(new Intent(AuthActivity.this, MainActivity.class));
                 finish();
             } else {
-                showSnackbarMessage("Unsuccessful response, status: " + response.errorBody());
+                showSnackbarMessage("Invalid credentials please try again");
             }
 
             progressDialog.dismiss();

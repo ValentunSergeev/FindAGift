@@ -20,12 +20,6 @@ import com.valentun.findgift.ui.auth.AuthActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-//TODO move ui changes to onResponse
-//--------------------------------------
-//TODO credentials page
-//TODO settings page
-//--------------------------------------
-
 public class MainActivity extends ApiActivity implements
         NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -44,10 +38,7 @@ public class MainActivity extends ApiActivity implements
         setContentView(R.layout.activity_main);
 
         if (!SessionManager.isSessionStarted()) {
-            Intent intent = new Intent(this, AuthActivity.class);
-            startActivity(intent);
-
-            finish();
+            goToAuth();
             return;
         }
 
@@ -65,6 +56,13 @@ public class MainActivity extends ApiActivity implements
                     .replace(R.id.main_fragment_container, modelFragment.getCurrentFragment(), CONTENT_TAG)
                     .commit();
         }
+    }
+
+    private void goToAuth() {
+        Intent intent = new Intent(this, AuthActivity.class);
+        startActivity(intent);
+
+        finish();
     }
 
     @Override
@@ -98,6 +96,9 @@ public class MainActivity extends ApiActivity implements
             case R.id.nav_settings:
                 break;
             case R.id.nav_logout:
+                SessionManager.finishSession();
+                goToAuth();
+                return true;
         }
         if (fragmentClass != null) replaceFragmentFromClass(fragmentClass);
 
