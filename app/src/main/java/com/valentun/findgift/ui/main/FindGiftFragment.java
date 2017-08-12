@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -24,9 +23,9 @@ import android.widget.Spinner;
 import com.github.aakira.expandablelayout.ExpandableLayoutListener;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.valentun.findgift.R;
-import com.valentun.findgift.core.main.MainAdapter;
+import com.valentun.findgift.core.main.adapters.MainGiftAdapter;
 import com.valentun.findgift.models.Gift;
-import com.valentun.findgift.network.BaseCallback;
+import com.valentun.findgift.network.callback.BaseCallback;
 import com.valentun.findgift.ui.abstracts.ApiFragment;
 import com.valentun.findgift.ui.newgift.NewGiftActivity;
 import com.valentun.findgift.utils.SearchUtils;
@@ -43,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.valentun.findgift.Constants.FAB_SCROLL_THRESHOLD;
 import static com.valentun.findgift.utils.WidgetUtils.hideKeyboard;
 
-public class FindGiftFragment extends ApiFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FindGiftFragment extends ApiFragment {
     private static final int NEW_GIFT_REQUEST_CODE = 1;
 
     @BindView(R.id.main_recycler) RecyclerView recyclerView;
@@ -55,7 +54,6 @@ public class FindGiftFragment extends ApiFragment implements SwipeRefreshLayout.
     @BindView(R.id.gender_search) RadioGroup genderField;
     @BindView(R.id.event_search) Spinner eventField;
     @BindView(R.id.age_clear) ImageView clearAge;
-    @BindView(R.id.gifts_container) SwipeRefreshLayout giftsContainer;
     @BindView(R.id.toggle_panel) View toggle;
 
     private boolean isExpanded = false, isQueryChanged = false;
@@ -63,7 +61,7 @@ public class FindGiftFragment extends ApiFragment implements SwipeRefreshLayout.
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.gifts_fragment, container, false);
+        return inflater.inflate(R.layout.fragment_find_gift, container, false);
     }
 
     @Override
@@ -72,16 +70,11 @@ public class FindGiftFragment extends ApiFragment implements SwipeRefreshLayout.
 
         ButterKnife.bind(this, view);
 
-        giftsContainer.setColorSchemeResources(R.color.primary, R.color.accent);
-        giftsContainer.setOnRefreshListener(this);
-
         setListeners();
 
         setUpRecycler();
 
         setListeners();
-
-        makeRequest();
     }
 
     private void refreshData() {
@@ -99,28 +92,23 @@ public class FindGiftFragment extends ApiFragment implements SwipeRefreshLayout.
         }
     }
 
-    @Override
-    public void onRefresh() {
-        giftsContainer.setRefreshing(true);
-        makeRequest();
-    }
-
     private void setUpRecycler() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(parent));
-        recyclerView.setAdapter(new MainAdapter(null));
+        recyclerView.setAdapter(new MainGiftAdapter(null));
     }
 
-    private void makeRequest() {
+    @Override
+    protected void makeRequest() {
         apiClient.getGifts(selectedAge, selectedGender, selectedEvent)
                 .enqueue(new BaseCallback<List<Gift>>(container, progressBar) {
                     @Override
                     public void onResponse(Call<List<Gift>> call, Response<List<Gift>> response) {
                         List<Gift> result = response.body();
-                        recyclerView.setAdapter(new MainAdapter(result));
+                        recyclerView.setAdapter(new MainGiftAdapter(result));
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
-                        giftsContainer.setRefreshing(false);
+                        refreshLayout.setRefreshing(false);
                     }
                 });
     }

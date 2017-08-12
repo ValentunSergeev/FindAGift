@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.valentun.findgift.network.APIClient;
 import com.valentun.findgift.network.ApiClientFactory;
-import com.valentun.findgift.network.BaseCallback;
+import com.valentun.findgift.network.callback.BaseCallback;
 
 public abstract class ApiActivity extends AppCompatActivity {
     protected APIClient apiClient;

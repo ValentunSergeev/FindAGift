@@ -1,29 +1,37 @@
-package com.valentun.findgift.core.main;
+package com.valentun.findgift.core.main.handlers;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.Toast;
 
 import com.valentun.findgift.R;
+import com.valentun.findgift.core.main.adapters.AbstractGiftAdapter;
 import com.valentun.findgift.databinding.GiftRecyclerItemBinding;
 import com.valentun.findgift.models.Gift;
 import com.valentun.findgift.network.APIClient;
 import com.valentun.findgift.network.ApiClientFactory;
-import com.valentun.findgift.network.NotifyCallback;
+import com.valentun.findgift.network.callback.SnackBarCallback;
 
 @SuppressWarnings("unchecked")
-public class MainListHandler {
-    private GiftRecyclerItemBinding binding;
-    private Gift gift;
-    private APIClient client;
-    private Context context;
+public abstract class AbstractGiftListHandler {
+    protected GiftRecyclerItemBinding binding;
+    protected Gift gift;
+    protected APIClient client;
+    protected Context context;
+    protected AbstractGiftAdapter adapter;
+    protected View root;
+    private SnackBarCallback unStarCallBack;
 
-    public MainListHandler(GiftRecyclerItemBinding binding, Gift gift) {
+    public AbstractGiftListHandler(GiftRecyclerItemBinding binding, Gift gift, AbstractGiftAdapter adapter) {
         this.binding = binding;
         this.gift = gift;
+        this.adapter = adapter;
         client = ApiClientFactory.getApiClient();
-        context = binding.getRoot().getContext();
+        root = binding.getRoot();
+        context = root.getContext();
+
+        unStarCallBack = new SnackBarCallback(root,
+                context.getString(R.string.unstar_success));
     }
 
     public void onVoteUpClicked(View view) {
@@ -46,8 +54,10 @@ public class MainListHandler {
         }
     }
 
-    public void onStarClicked(View view) {
-        Toast.makeText(view.getContext(), "starClicked", Toast.LENGTH_SHORT).show();
+    public abstract void onFabClicked(View view);
+
+    void makeUnStarRequest() {
+        client.unstarGift(String.valueOf(gift.getId())).enqueue(unStarCallBack);
     }
 
     private void updateRateView(int delta) {
@@ -69,11 +79,11 @@ public class MainListHandler {
 
     private void startUpVoteRequest() {
         client.upVoteGift(String.valueOf(gift.getId()))
-                .enqueue(new NotifyCallback(binding.getRoot()));
+                .enqueue(new SnackBarCallback(root));
     }
 
     private void startDownVoteRequest() {
         client.downVoteGift(String.valueOf(gift.getId()))
-                .enqueue(new NotifyCallback(binding.getRoot()));
+                .enqueue(new SnackBarCallback(root));
     }
 }

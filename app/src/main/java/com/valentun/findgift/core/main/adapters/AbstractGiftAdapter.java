@@ -1,4 +1,4 @@
-package com.valentun.findgift.core.main;
+package com.valentun.findgift.core.main.adapters;
 
 import android.databinding.DataBindingUtil;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.valentun.findgift.R;
+import com.valentun.findgift.core.main.handlers.AbstractGiftListHandler;
 import com.valentun.findgift.databinding.GiftRecyclerItemBinding;
 import com.valentun.findgift.models.Gift;
 
@@ -18,11 +19,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
-    private List<Gift> data;
+public abstract class AbstractGiftAdapter extends RecyclerView.Adapter<AbstractGiftAdapter.MainViewHolder> {
+    protected List<Gift> data;
+    private RemoveItemListener removeListener;
 
-    public MainAdapter(List<Gift> data) {
+    public interface RemoveItemListener {
+        void onItemRemoved(int dataSize);
+    }
+
+    public AbstractGiftAdapter(List<Gift> data, RemoveItemListener listener) {
         this.data = data;
+        removeListener = listener;
     }
 
     @Override
@@ -41,6 +48,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     public int getItemCount() {
         if (data == null) return 0;
         return data.size();
+    }
+
+    public void removeAt(int position) {
+        data.remove(position);
+        notifyItemRemoved(position);
+        if (removeListener != null) removeListener.onItemRemoved(data.size());
+    }
+
+    public int getPositionOf(Gift gift) {
+        return data.indexOf(gift);
     }
 
     class MainViewHolder extends RecyclerView.ViewHolder {
@@ -65,7 +82,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             binding.itemRate.setTextColor(color);
 
             binding.setGift(gift);
-            binding.setHandlers(new MainListHandler(binding, gift));
+            binding.giftItemStar.setImageResource(getFabImageId(gift));
+            binding.setHandlers(getHandler(binding, gift));
 
             Picasso.with(itemView.getContext())
                     .load(gift.getImageUrl())
@@ -73,4 +91,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                     .into(image);
         }
     }
+
+    abstract int getFabImageId(Gift gift);
+
+    abstract AbstractGiftListHandler getHandler(GiftRecyclerItemBinding binding, Gift gift);
 }

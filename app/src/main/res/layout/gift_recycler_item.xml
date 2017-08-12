@@ -10,7 +10,7 @@
 
         <variable
             name="handlers"
-            type="com.valentun.findgift.core.main.MainListHandler" />
+            type="com.valentun.findgift.core.main.handlers.AbstractGiftListHandler" />
     </data>
 
     <android.support.v7.widget.CardView
@@ -49,8 +49,7 @@
                 android:id="@+id/gift_item_star"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{handlers::onStarClicked}"
-                android:src="@{gift.saved ? @drawable/ic_star_white_24dp : @drawable/ic_star_border_white_24dp}"
+                android:onClick="@{handlers::onFabClicked}"
                 app:fabSize="normal"
                 app:layout_constraintBottom_toBottomOf="@+id/item_image"
                 app:layout_constraintHorizontal_bias="0.95"

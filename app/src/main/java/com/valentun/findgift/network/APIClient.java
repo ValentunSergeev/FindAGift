@@ -31,4 +31,13 @@ public interface APIClient {
 
     @GET("gifts/{gift}/dislike")
     Call<ResponseBody> downVoteGift(@Path("gift") String gift);
+
+    @GET("gifts/{gift}/star")
+    Call<ResponseBody> starGift(@Path("gift") String gift);
+
+    @GET("gifts/{gift}/unstar")
+    Call<ResponseBody> unstarGift(@Path("gift") String gift);
+
+    @GET("gifts/starred.json")
+    Call<List<Gift>> getStarredGifts();
 }

@@ -22,7 +22,7 @@ public class SessionManager {
         PreferenceUtils.putStringValues(appContext, values);
     }
 
-    public static void destroySession() {
+    public static void finishSession() {
         PreferenceUtils.deleteValues(appContext, UID_KEY, CLIENT_KEY, ACCESS_TOKEN_KEY);
     }
 

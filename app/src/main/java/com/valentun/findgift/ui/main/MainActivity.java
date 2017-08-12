@@ -19,10 +19,8 @@ import com.valentun.findgift.ui.auth.AuthActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-//--------------------------------------
-//TODO navDrawer
-//--------------------------------------
-//TODO Save(star) functionality
+
+//TODO move ui changes to onResponse
 //--------------------------------------
 //TODO credentials page
 //TODO settings page
@@ -35,8 +33,10 @@ public class MainActivity extends ApiActivity implements
     @BindView(R.id.nav_view) NavigationView navigationView;
 
     private static final String CONTENT_TAG = "MainContent";
+    private static final String MODEL_TAG = "MainModel";
     private FragmentManager fragmentManager;
     private ActionBarDrawerToggle toggle;
+    private MainModelFragment modelFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +57,13 @@ public class MainActivity extends ApiActivity implements
 
         fragmentManager = getSupportFragmentManager();
 
-        Fragment fragment = fragmentManager.findFragmentByTag(CONTENT_TAG);
-        if (fragment == null) {
+        modelFragment = (MainModelFragment) fragmentManager.findFragmentByTag(MODEL_TAG);
+        if (modelFragment == null) {
             setInitialState();
+        } else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment_container, modelFragment.getCurrentFragment(), CONTENT_TAG)
+                    .commit();
         }
     }
 
@@ -87,6 +91,7 @@ public class MainActivity extends ApiActivity implements
                 fragmentClass = FindGiftFragment.class;
                 break;
             case R.id.nav_stars:
+                fragmentClass = StarredFragment.class;
                 break;
             case R.id.nav_about:
                 break;
@@ -102,8 +107,12 @@ public class MainActivity extends ApiActivity implements
     }
 
     private void setInitialState() {
+        modelFragment = new MainModelFragment();
+        modelFragment.setCurrentFragment(new FindGiftFragment());
+
         fragmentManager.beginTransaction()
-                .add(R.id.main_fragment_container, new FindGiftFragment(), CONTENT_TAG)
+                .add(modelFragment, MODEL_TAG)
+                .add(R.id.main_fragment_container, modelFragment.getCurrentFragment(), CONTENT_TAG)
                 .commit();
         navigationView.setCheckedItem(R.id.nav_find_gift);
     }
@@ -116,14 +125,16 @@ public class MainActivity extends ApiActivity implements
         drawer.addDrawerListener(toggle);
         drawer.setFitsSystemWindows(true);
         toggle.syncState();
-
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     private void replaceFragmentFromClass(Class<? extends Fragment> fragmentClass){
         try {
+            Fragment fragment = fragmentClass.newInstance();
+            modelFragment.setCurrentFragment(fragment);
+
             fragmentManager.beginTransaction()
-                    .replace(R.id.main_fragment_container, fragmentClass.newInstance())
+                    .replace(R.id.main_fragment_container, fragment)
                     .commit();
         } catch (Exception e) {
             e.printStackTrace();

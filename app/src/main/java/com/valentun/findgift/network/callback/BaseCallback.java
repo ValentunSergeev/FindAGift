@@ -1,4 +1,4 @@
-package com.valentun.findgift.network;
+package com.valentun.findgift.network.callback;
 
 
 import android.app.ProgressDialog;

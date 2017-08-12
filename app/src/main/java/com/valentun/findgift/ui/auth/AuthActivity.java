@@ -13,7 +13,7 @@ import com.valentun.findgift.R;
 import com.valentun.findgift.models.AuthModel;
 import com.valentun.findgift.network.APIClient;
 import com.valentun.findgift.network.ApiClientFactory;
-import com.valentun.findgift.network.BaseCallback;
+import com.valentun.findgift.network.callback.BaseCallback;
 import com.valentun.findgift.persistence.SessionManager;
 import com.valentun.findgift.ui.abstracts.ApiActivity;
 import com.valentun.findgift.ui.main.MainActivity;

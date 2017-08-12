@@ -14,4 +14,5 @@
     <color name="placeholder_color">#F2F2F2</color>
     <color name="vote_down_color">#E79D36</color>
     <color name="vote_up_color">#7CB342</color>
+    <color name="default_background">#FAFAFA</color>
 </resources>

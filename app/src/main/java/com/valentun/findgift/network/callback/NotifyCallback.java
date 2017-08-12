@@ -1,4 +1,4 @@
-package com.valentun.findgift.network;
+package com.valentun.findgift.network.callback;
 
 import android.support.design.widget.Snackbar;
 import android.view.View;

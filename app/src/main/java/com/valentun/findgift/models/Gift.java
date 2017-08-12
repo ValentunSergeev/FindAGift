@@ -32,7 +32,7 @@ public class Gift {
     private String imageUrl;
 
     @JsonProperty("saved")
-    private boolean isSaved;
+    private boolean isStarred;
 
     @JsonProperty("liked")
     private boolean isLiked;
@@ -53,12 +53,12 @@ public class Gift {
         this.rating = rating;
     }
 
-    public boolean isSaved() {
-        return isSaved;
+    public boolean isStarred() {
+        return isStarred;
     }
 
-    public void setSaved(boolean saved) {
-        isSaved = saved;
+    public void setStarred(boolean starred) {
+        isStarred = starred;
     }
 
     public boolean isLiked() {
