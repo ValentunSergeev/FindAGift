@@ -26,7 +26,7 @@ public class Gift {
     private int eventType;
 
     @JsonProperty("price_type")
-    private int priceType;
+    private String priceType;
 
     @JsonProperty("image")
     private String imageUrl;
@@ -43,6 +43,10 @@ public class Gift {
 
     public String getStringRating() {
         return String.valueOf(rating);
+    }
+
+    public double getDoublePrice() {
+        return Double.parseDouble(price);
     }
 
     public void updateLikeState(Gift gift) {
@@ -101,11 +105,11 @@ public class Gift {
         return this;
     }
 
-    public int getPriceType() {
+    public String getPriceType() {
         return priceType;
     }
 
-    public Gift setPriceType(int priceType) {
+    public Gift setPriceType(String priceType) {
         this.priceType = priceType;
         return this;
     }

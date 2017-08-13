@@ -12,7 +12,7 @@ import com.valentun.findgift.Constants;
 import com.valentun.findgift.R;
 import com.valentun.findgift.models.AuthModel;
 import com.valentun.findgift.network.APIClient;
-import com.valentun.findgift.network.ApiClientFactory;
+import com.valentun.findgift.network.RetrofitClientFactory;
 import com.valentun.findgift.network.callback.BaseCallback;
 import com.valentun.findgift.persistence.SessionManager;
 import com.valentun.findgift.ui.abstracts.ApiActivity;
@@ -42,7 +42,7 @@ public class AuthActivity extends ApiActivity {
 
         ButterKnife.bind(this);
 
-        client = ApiClientFactory.getApiClient();
+        client = RetrofitClientFactory.getApiClient();
 
         WidgetUtils.colorizeTextWidget(registerSubmit, R.color.accent);
         WidgetUtils.colorizeTextWidget(loginSubmit, R.color.indigo);

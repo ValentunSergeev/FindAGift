@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.valentun.findgift.network.APIClient;
-import com.valentun.findgift.network.ApiClientFactory;
+import com.valentun.findgift.network.RetrofitClientFactory;
 import com.valentun.findgift.network.callback.BaseCallback;
 
 public abstract class ApiActivity extends AppCompatActivity {
@@ -21,7 +21,7 @@ public abstract class ApiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         container = findViewById(android.R.id.content);
-        apiClient = ApiClientFactory.getApiClient();
+        apiClient = RetrofitClientFactory.getApiClient();
 
         setUpProgress();
     }

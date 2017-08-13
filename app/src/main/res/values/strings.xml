@@ -55,4 +55,7 @@
     <string name="unstar_success">Gift was successfully removed from stars list</string>
     <string name="star_success">Gift was successfully added to your stars list</string>
     <string name="not_success_default">Something went wrong. Please try again</string>
+    <string name="internet_error_title">Can not connect to server</string>
+    <string name="internet_error_message">Can not connect to server, check your internet connection and try again.</string>
+    <string name="currency_changed">Currency changed</string>
 </resources>

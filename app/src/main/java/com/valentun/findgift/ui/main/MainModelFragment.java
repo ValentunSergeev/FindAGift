@@ -1,12 +1,8 @@
 package com.valentun.findgift.ui.main;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-
-/**
- * Created by Valentun on 12.08.2017.
- */
 
 public class MainModelFragment extends Fragment {
     private Fragment currentFragment;

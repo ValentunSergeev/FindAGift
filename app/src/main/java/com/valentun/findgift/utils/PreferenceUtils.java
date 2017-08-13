@@ -17,6 +17,10 @@ public class PreferenceUtils {
         return getPreferences(context).getString(key, Constants.PREFERENCES.DEFAULT_STRING_VALUE);
     }
 
+    public static String getString(Context context, String key, String defaultValue) {
+        return getPreferences(context).getString(key, defaultValue);
+    }
+
     public static void putStringValues(Context context, HashMap<String, String> values) {
         SharedPreferences.Editor editor = getPreferences(context).edit();
 

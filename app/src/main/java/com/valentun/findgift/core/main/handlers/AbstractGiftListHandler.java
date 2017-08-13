@@ -9,7 +9,7 @@ import com.valentun.findgift.core.main.adapters.AbstractGiftAdapter;
 import com.valentun.findgift.databinding.GiftRecyclerItemBinding;
 import com.valentun.findgift.models.Gift;
 import com.valentun.findgift.network.APIClient;
-import com.valentun.findgift.network.ApiClientFactory;
+import com.valentun.findgift.network.RetrofitClientFactory;
 import com.valentun.findgift.network.callback.BaseCallback;
 
 import retrofit2.Call;
@@ -28,7 +28,7 @@ public abstract class AbstractGiftListHandler {
         this.binding = binding;
         this.gift = gift;
         this.adapter = adapter;
-        client = ApiClientFactory.getApiClient();
+        client = RetrofitClientFactory.getApiClient();
         root = binding.getRoot();
         context = root.getContext();
     }

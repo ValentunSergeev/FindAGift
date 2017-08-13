@@ -52,29 +52,21 @@ public class NewGiftActivity extends ApiActivity {
     private static final int GALLERY_REQUEST = 1339;
     private static final int PERMISSIONS_REQUEST_CODE = 1;
 
-    @BindView(R.id.new_image)
-    ImageView newImage;
-    @BindView(R.id.new_name)
-    EditText newName;
-    @BindView(R.id.new_description)
-    EditText newDescription;
-    @BindView(R.id.new_price)
-    EditText newPrice;
-    @BindView(R.id.new_min_age)
-    EditText newMinAge;
-    @BindView(R.id.new_max_age)
-    EditText newMaxAge;
+    @BindView(R.id.new_image) ImageView newImage;
+    @BindView(R.id.new_name) EditText newName;
+    @BindView(R.id.new_description) EditText newDescription;
+    @BindView(R.id.new_price) EditText newPrice;
+    @BindView(R.id.new_min_age) EditText newMinAge;
+    @BindView(R.id.new_max_age) EditText newMaxAge;
 
-    @BindView(R.id.money_type)
-    Spinner newPriceType;
-    @BindView(R.id.new_event)
-    Spinner newEventType;
+    @BindView(R.id.money_type) Spinner newPriceType;
+    @BindView(R.id.new_event) Spinner newEventType;
 
-    @BindView(R.id.new_gender)
-    RadioGroup newGender;
+    @BindView(R.id.new_gender) RadioGroup newGender;
 
     private Bitmap image;
-    private int[] priceTypes, eventTypes;
+    private int[] eventTypes;
+    private String[] priceTypes;
 
     private String imageURL;
     private Gift gift;
@@ -86,7 +78,7 @@ public class NewGiftActivity extends ApiActivity {
 
         ButterKnife.bind(this);
 
-        priceTypes = getResources().getIntArray(R.array.money_types_keys);
+        priceTypes = getResources().getStringArray(R.array.money_types_keys);
         eventTypes = getResources().getIntArray(R.array.event_type_keys);
 
         newMinAge.setOnFocusChangeListener(new AgeFocusListener(GIFT_PARAMS.MIN_AGE_VALUE));
@@ -129,7 +121,7 @@ public class NewGiftActivity extends ApiActivity {
         String name = getTextFromEditText(newName);
         String price = getTextFromEditText(newPrice);
         String description = getTextFromEditText(newDescription);
-        int priceType = priceTypes[newPriceType.getSelectedItemPosition()];
+        String priceType = priceTypes[newPriceType.getSelectedItemPosition()];
         int eventType = eventTypes[newEventType.getSelectedItemPosition()];
         String gender = SearchUtils.getGenderFromButtonId(newGender.getCheckedRadioButtonId());
         int minAge = getIntFromEditText(newMinAge, GIFT_PARAMS.MIN_AGE_VALUE);

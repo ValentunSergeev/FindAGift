@@ -12,11 +12,15 @@ public class Constants {
 
     public static class URL {
         public static final String API_BASE = "https://findagift.herokuapp.com/";
+        public static final String RATES_BASE = "http://api.fixer.io/";
     }
 
     public static class PREFERENCES {
         public static final String APP_KEY = "findagift";
+        public static final String PRICE_TYPE_KEY = "price_type";
+
         public static final int DEFAULT_INT_VALUE = -1;
+        public static final String DEFAULT_PRICE_TYPE = "USD";
         public static final String DEFAULT_STRING_VALUE = "null";
     }
 
@@ -27,6 +31,11 @@ public class Constants {
 
         public static final int MIN_AGE_VALUE = 0;
         public static final int MAX_AGE_VALUE = 150;
+    }
+
+    public static class Convert {
+        public static final int SMALL_PRICE_THRESHOLD = 10;
+        public static final int ROUND_COEFFICIENT = 10;
     }
 
     public static final int FAB_SCROLL_THRESHOLD = 5;

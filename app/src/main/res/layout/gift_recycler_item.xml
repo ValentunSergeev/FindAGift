@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.valentun.findgift.persistence.CurrenciesManager"/>
+
         <variable
             name="gift"
             type="com.valentun.findgift.models.Gift" />
@@ -107,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="16dp"
-                android:text="@{gift.price}"
+                android:text="@{CurrenciesManager.convertPriceToPreferred(gift)}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintLeft_toLeftOf="@+id/item_description"
                 app:layout_constraintTop_toBottomOf="@+id/view"
@@ -158,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:layout_marginStart="4dp"
-                android:text="@{@stringArray/money_types_values[gift.priceType]}"
+                android:text="@{CurrenciesManager.getPreferredPriceSymbol()}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintBottom_toBottomOf="@+id/item_price"
                 app:layout_constraintLeft_toRightOf="@+id/item_price"

@@ -8,20 +8,32 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-public class ApiClientFactory {
-    private static Retrofit retrofit;
+public class RetrofitClientFactory {
     private static APIClient apiClient;
+    private static ExchangeRatesClient exchangeRatesClient;
 
     public static APIClient getApiClient() {
-        if(retrofit == null) initRetrofit();
-        if (apiClient == null) apiClient = retrofit.create(APIClient.class);
+        if (apiClient == null) apiClient = getAPIRetrofit().create(APIClient.class);
         return apiClient;
     }
 
-    private static void initRetrofit() {
-        retrofit = new Retrofit.Builder()
+    public static ExchangeRatesClient getExchangeRatesClient() {
+        if (exchangeRatesClient == null) exchangeRatesClient = getRatesRetrofit()
+                .create(ExchangeRatesClient.class);
+        return exchangeRatesClient;
+    }
+
+    private static Retrofit getAPIRetrofit() {
+        return new Retrofit.Builder()
                 .baseUrl(Constants.URL.API_BASE)
                 .client(buildAuthClient())
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build();
+    }
+
+    private static Retrofit getRatesRetrofit() {
+        return new Retrofit.Builder()
+                .baseUrl(Constants.URL.RATES_BASE)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
     }

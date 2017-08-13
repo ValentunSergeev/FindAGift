@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:entries="@array/money_types_values"
+        android:entryValues="@array/money_types_keys"
+        android:defaultValue="USD"
+        android:title="Currency"
+        android:summary="Currency into which all prices will be transferred"
+        android:key="price_type" />
+</PreferenceScreen>

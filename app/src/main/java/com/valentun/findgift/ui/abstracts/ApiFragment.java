@@ -1,17 +1,17 @@
 package com.valentun.findgift.ui.abstracts;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
 import com.valentun.findgift.R;
 import com.valentun.findgift.network.APIClient;
-import com.valentun.findgift.network.ApiClientFactory;
+import com.valentun.findgift.network.RetrofitClientFactory;
 
 public abstract class ApiFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener  {
     protected APIClient apiClient;
@@ -24,7 +24,7 @@ public abstract class ApiFragment extends Fragment implements SwipeRefreshLayout
         super.onCreate(savedInstanceState);
 
         parent = getActivity();
-        apiClient = ApiClientFactory.getApiClient();
+        apiClient = RetrofitClientFactory.getApiClient();
         container = parent.findViewById(R.id.main_fragment_container);
 
         setRetainInstance(true);
