@@ -6,6 +6,8 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.valentun.findgift.R;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -32,7 +34,15 @@ public abstract class BaseCallback<T> implements Callback<T> {
     public void onFailure(Call<T> call, Throwable t) {
         if (dialog != null) dialog.dismiss();
         if (bar != null) bar.setVisibility(View.GONE);
-        Snackbar.make(container, t.getMessage(), Snackbar.LENGTH_SHORT)
-        .show();
+        showMessage(t.getMessage());
+    }
+
+    protected void showMessage(String msg) {
+        Snackbar.make(container, msg, Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    protected void showDefaultErrorMessage() {
+        showMessage(container.getContext().getString(R.string.not_success_default));
     }
 }

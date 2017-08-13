@@ -10,7 +10,10 @@ import com.valentun.findgift.databinding.GiftRecyclerItemBinding;
 import com.valentun.findgift.models.Gift;
 import com.valentun.findgift.network.APIClient;
 import com.valentun.findgift.network.ApiClientFactory;
-import com.valentun.findgift.network.callback.SnackBarCallback;
+import com.valentun.findgift.network.callback.BaseCallback;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractGiftListHandler {
@@ -20,7 +23,6 @@ public abstract class AbstractGiftListHandler {
     protected Context context;
     protected AbstractGiftAdapter adapter;
     protected View root;
-    private SnackBarCallback unStarCallBack;
 
     public AbstractGiftListHandler(GiftRecyclerItemBinding binding, Gift gift, AbstractGiftAdapter adapter) {
         this.binding = binding;
@@ -29,41 +31,20 @@ public abstract class AbstractGiftListHandler {
         client = ApiClientFactory.getApiClient();
         root = binding.getRoot();
         context = root.getContext();
-
-        unStarCallBack = new SnackBarCallback(root,
-                context.getString(R.string.unstar_success));
     }
 
     public void onVoteUpClicked(View view) {
-        if (gift.isLiked()){
-            updateRateView(-1);
-            setDislikeState();
-
-            gift.setRating(gift.getRating() - 1);
-            gift.setIsLiked(false);
-
+        if (gift.isLiked()) {
             startDownVoteRequest();
         } else {
-            updateRateView(1);
-            setLikedState();
-
-            gift.setRating(gift.getRating() + 1);
-            gift.setIsLiked(true);
-
             startUpVoteRequest();
         }
     }
 
     public abstract void onFabClicked(View view);
 
-    void makeUnStarRequest() {
-        client.unstarGift(String.valueOf(gift.getId())).enqueue(unStarCallBack);
-    }
-
-    private void updateRateView(int delta) {
-        int rating = Integer.parseInt(binding.itemRate.getText().toString());
-
-        binding.itemRate.setText(String.valueOf(rating + delta));
+    private void updateRateView(int rating) {
+        binding.itemRate.setText(String.valueOf(rating));
     }
 
     private void setLikedState() {
@@ -72,18 +53,42 @@ public abstract class AbstractGiftListHandler {
         binding.itemRate.setTextColor(color);
     }
 
-    private void setDislikeState() {
+    private void setDislikedState() {
         binding.voteUp.clearColorFilter();
         binding.itemRate.setTextColor(ContextCompat.getColor(context, R.color.ic_color));
     }
 
     private void startUpVoteRequest() {
         client.upVoteGift(String.valueOf(gift.getId()))
-                .enqueue(new SnackBarCallback(root));
+                .enqueue(new BaseCallback<Gift>(root) {
+                    @Override
+                    public void onResponse(Call<Gift> call, Response<Gift> response) {
+                        if (response.isSuccessful()) {
+                            gift.updateLikeState(response.body());
+                            updateRateView(gift.getRating());
+
+                            setLikedState();
+                        } else {
+                            showDefaultErrorMessage();
+                        }
+                    }
+                });
     }
 
     private void startDownVoteRequest() {
         client.downVoteGift(String.valueOf(gift.getId()))
-                .enqueue(new SnackBarCallback(root));
+                .enqueue(new BaseCallback<Gift>(root) {
+                    @Override
+                    public void onResponse(Call<Gift> call, Response<Gift> response) {
+                        if (response.isSuccessful()) {
+                            gift.updateLikeState(response.body());
+
+                            updateRateView(gift.getRating());
+                            setDislikedState();
+                        } else {
+                            showDefaultErrorMessage();
+                        }
+                    }
+                });
     }
 }

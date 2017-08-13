@@ -20,7 +20,7 @@ public class ApiClientFactory {
 
     private static void initRetrofit() {
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.URL.BASE)
+                .baseUrl(Constants.URL.API_BASE)
                 .client(buildAuthClient())
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();

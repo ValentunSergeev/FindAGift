@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="gift"
             type="com.valentun.findgift.models.Gift" />
@@ -16,13 +17,14 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true"
         app:cardCornerRadius="@dimen/cornerRadius"
-        app:cardElevation="2dp">
+        app:cardElevation="2dp"
+        app:cardUseCompatPadding="true">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp">
 
 
             <android.support.constraint.Guideline
@@ -68,7 +70,6 @@
                 android:layout_marginTop="8dp"
                 android:text="@{gift.name}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/horizontal_guideline"
@@ -88,55 +89,75 @@
                 app:layout_constraintTop_toBottomOf="@+id/item_name"
                 tools:text="Lorem ipsum doler sit amte concestador. Lorem ipsum doler sit amte concestador. Lorem ipsum doler sit amte concestador." />
 
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/divider"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_description" />
+
             <TextView
                 android:id="@+id/item_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="0dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:text="@{gift.price}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="@+id/item_description"
-                app:layout_constraintTop_toBottomOf="@+id/item_description"
+                app:layout_constraintTop_toBottomOf="@+id/view"
                 tools:text="100" />
 
-            <TextView
-                android:id="@+id/item_rate"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginTop="0dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="@{gift.stringRating}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textColor="@color/ic_color"
-                android:textSize="17sp"
-                app:layout_constraintBottom_toBottomOf="@+id/vote_up"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/vote_up"
-                tools:text="111" />
-
-            <ImageView
-                android:id="@+id/vote_up"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginTop="0dp"
+                android:background="?attr/selectableItemBackground"
                 android:onClick="@{handlers::onVoteUpClicked}"
+                android:padding="4dp"
                 app:layout_constraintBottom_toBottomOf="@+id/item_price"
-                app:layout_constraintRight_toLeftOf="@+id/item_rate"
                 app:layout_constraintTop_toTopOf="@+id/item_price"
-                app:srcCompat="@drawable/ic_heart" />
+                android:layout_marginRight="4dp"
+                app:layout_constraintRight_toRightOf="parent">
+
+                <ImageView
+                    android:id="@+id/vote_up"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_heart" />
+
+                <TextView
+                    android:id="@+id/item_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@{gift.stringRating}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textColor="@color/ic_color"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/vote_up"
+                    app:layout_constraintLeft_toRightOf="@+id/vote_up"
+                    app:layout_constraintTop_toTopOf="@+id/vote_up"
+                    tools:layout_editor_absoluteY="2dp"
+                    tools:text="111" />
+
+            </android.support.constraint.ConstraintLayout>
+
 
             <TextView
                 android:id="@+id/item_price_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:text="@{@stringArray/money_types_values[gift.priceType]}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintBottom_toBottomOf="@+id/item_price"

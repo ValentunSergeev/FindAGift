@@ -45,6 +45,11 @@ public class Gift {
         return String.valueOf(rating);
     }
 
+    public void updateLikeState(Gift gift) {
+        isLiked = gift.isLiked();
+        rating = gift.getRating();
+    }
+
     public int getRating() {
         return rating;
     }

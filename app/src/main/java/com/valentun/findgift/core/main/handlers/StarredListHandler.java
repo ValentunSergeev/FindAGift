@@ -23,8 +23,7 @@ public class StarredListHandler extends AbstractGiftListHandler {
         makeUnStarRequest();
     }
 
-    @Override
-    void makeUnStarRequest() {
+    private void makeUnStarRequest() {
         client.unstarGift((String.valueOf(gift.getId()))).enqueue(new BaseCallback<ResponseBody>(root) {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

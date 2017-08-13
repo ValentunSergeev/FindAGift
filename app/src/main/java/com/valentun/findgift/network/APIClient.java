@@ -27,10 +27,10 @@ public interface APIClient {
     Call<ResponseBody> createGift(@Body Gift gift);
 
     @GET("gifts/{gift}/like")
-    Call<ResponseBody> upVoteGift(@Path("gift") String gift);
+    Call<Gift> upVoteGift(@Path("gift") String gift);
 
     @GET("gifts/{gift}/dislike")
-    Call<ResponseBody> downVoteGift(@Path("gift") String gift);
+    Call<Gift> downVoteGift(@Path("gift") String gift);
 
     @GET("gifts/{gift}/star")
     Call<ResponseBody> starGift(@Path("gift") String gift);

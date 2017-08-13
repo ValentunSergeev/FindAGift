@@ -11,7 +11,7 @@ public class Constants {
     }
 
     public static class URL {
-        public static final String BASE = "https://findagift.herokuapp.com/";
+        public static final String API_BASE = "https://findagift.herokuapp.com/";
     }
 
     public static class PREFERENCES {
