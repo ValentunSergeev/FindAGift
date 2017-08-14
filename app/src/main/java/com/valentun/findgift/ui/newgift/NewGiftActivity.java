@@ -27,7 +27,6 @@ import com.google.firebase.storage.UploadTask;
 import com.valentun.findgift.Constants;
 import com.valentun.findgift.Constants.GIFT_PARAMS;
 import com.valentun.findgift.R;
-import com.valentun.findgift.models.ExchangeRates;
 import com.valentun.findgift.models.Gift;
 import com.valentun.findgift.network.ExchangeRatesClient;
 import com.valentun.findgift.network.RetrofitClientFactory;
@@ -56,26 +55,17 @@ public class NewGiftActivity extends ApiActivity {
     private static final int GALLERY_REQUEST = 1339;
     private static final int PERMISSIONS_REQUEST_CODE = 1;
 
-    @BindView(R.id.new_image)
-    ImageView newImage;
-    @BindView(R.id.new_name)
-    EditText newName;
-    @BindView(R.id.new_description)
-    EditText newDescription;
-    @BindView(R.id.new_price)
-    EditText newPrice;
-    @BindView(R.id.new_min_age)
-    EditText newMinAge;
-    @BindView(R.id.new_max_age)
-    EditText newMaxAge;
+    @BindView(R.id.new_image) ImageView newImage;
+    @BindView(R.id.new_name) EditText newName;
+    @BindView(R.id.new_description) EditText newDescription;
+    @BindView(R.id.new_price) EditText newPrice;
+    @BindView(R.id.new_min_age) EditText newMinAge;
+    @BindView(R.id.new_max_age) EditText newMaxAge;
 
-    @BindView(R.id.money_type)
-    Spinner newPriceType;
-    @BindView(R.id.new_event)
-    Spinner newEventType;
+    @BindView(R.id.money_type) Spinner newPriceType;
+    @BindView(R.id.new_event) Spinner newEventType;
 
-    @BindView(R.id.new_gender)
-    RadioGroup newGender;
+    @BindView(R.id.new_gender) RadioGroup newGender;
 
     private Bitmap image;
     private int[] eventTypes;
@@ -131,8 +121,7 @@ public class NewGiftActivity extends ApiActivity {
         if (imageURL == null) {
             uploadImage();
         } else {
-            if (CurrenciesManager.isEURRatePresent()) uploadGift();
-            else getCurrency();
+            uploadGift();
         }
     }
 
@@ -155,6 +144,8 @@ public class NewGiftActivity extends ApiActivity {
                 .setGender(gender)
                 .setMaxAge(maxAge)
                 .setMinAge(minAge);
+
+        gift.setPrice(CurrenciesManager.covertPriceToEUR(gift));
     }
 
     private void uploadImage() {
@@ -174,8 +165,7 @@ public class NewGiftActivity extends ApiActivity {
                 Uri uri = taskSnapshot.getDownloadUrl();
                 imageURL = uri.toString();
                 gift.setImageUrl(imageURL);
-                if (CurrenciesManager.isEURRatePresent()) uploadGift();
-                else getCurrency();
+                uploadGift();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -189,7 +179,6 @@ public class NewGiftActivity extends ApiActivity {
 
     private void uploadGift() {
         showProgress(getString(R.string.create_gift_message));
-        gift.setPrice(CurrenciesManager.covertPriceToEUR(gift));
         apiClient.createGift(gift).enqueue(new ApiCallback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -202,22 +191,6 @@ public class NewGiftActivity extends ApiActivity {
                 } else {
                     progressDialog.dismiss();
                     showSnackbarMessage(getString(R.string.create_gift_error, response.errorBody()));
-                }
-            }
-        });
-    }
-
-    private void getCurrency() {
-        showProgress(getString(R.string.new_gift_currency));
-        client.getExchangeRates(Constants.Convert.EUR).enqueue(new ApiCallback<ExchangeRates>() {
-            @Override
-            public void onResponse(Call<ExchangeRates> call, Response<ExchangeRates> response) {
-                if (response.isSuccessful()) {
-                    CurrenciesManager.setEURRates(response.body());
-                    uploadGift();
-                } else {
-                    progressDialog.dismiss();
-                    showDefaultErrorMessage();
                 }
             }
         });

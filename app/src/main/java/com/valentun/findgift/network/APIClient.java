@@ -21,7 +21,11 @@ public interface APIClient {
     Call<ResponseBody> createSession(@Body AuthModel authModel);
 
     @GET("gifts.json")
-    Call<List<Gift>> getGifts(@Query("age") String age, @Query("gender") String gender, @Query("event_type") String eventType);
+    Call<List<Gift>> getGifts(@Query("age") String age,
+                              @Query("gender") String gender,
+                              @Query("event_type") String eventType,
+                              @Query("min_price") String minPrice,
+                              @Query("max_price") String maxPrice);
 
     @POST("gifts.json")
     Call<ResponseBody> createGift(@Body Gift gift);

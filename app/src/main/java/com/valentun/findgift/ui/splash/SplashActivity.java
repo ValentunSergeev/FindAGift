@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
+import com.valentun.findgift.Constants;
 import com.valentun.findgift.R;
 import com.valentun.findgift.models.ExchangeRates;
 import com.valentun.findgift.network.ExchangeRatesClient;
@@ -31,7 +32,23 @@ public class SplashActivity extends AppCompatActivity {
         client.getExchangeRates(priceType).enqueue(new Callback<ExchangeRates>() {
             @Override
             public void onResponse(Call<ExchangeRates> call, Response<ExchangeRates> response) {
-                CurrenciesManager.setExchangeRates(response.body());
+                CurrenciesManager.setPreferredCurrencyRates(response.body());
+                getEURRates();
+            }
+
+            @Override
+            public void onFailure(Call<ExchangeRates> call, Throwable t) {
+                showErrorDialog();
+            }
+        });
+    }
+
+    private void getEURRates() {
+        ExchangeRatesClient client = RetrofitClientFactory.getExchangeRatesClient();
+        client.getExchangeRates(Constants.Convert.EUR).enqueue(new Callback<ExchangeRates>() {
+            @Override
+            public void onResponse(Call<ExchangeRates> call, Response<ExchangeRates> response) {
+                CurrenciesManager.setEURRates(response.body());
                 startMainActivity();
             }
 

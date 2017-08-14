@@ -2,13 +2,13 @@ package com.valentun.findgift.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +24,10 @@ import com.github.aakira.expandablelayout.ExpandableLayoutListener;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.valentun.findgift.R;
 import com.valentun.findgift.core.main.adapters.MainGiftAdapter;
+import com.valentun.findgift.core.main.listeners.BaseTextWathcer;
 import com.valentun.findgift.models.Gift;
 import com.valentun.findgift.network.callback.BaseCallback;
+import com.valentun.findgift.persistence.CurrenciesManager;
 import com.valentun.findgift.ui.abstracts.ApiFragment;
 import com.valentun.findgift.ui.newgift.NewGiftActivity;
 import com.valentun.findgift.utils.SearchUtils;
@@ -50,14 +52,18 @@ public class FindGiftFragment extends ApiFragment {
     @BindView(R.id.new_gift_button) FloatingActionButton fab;
     @BindView(R.id.slide_panel) ExpandableRelativeLayout slidePanel;
     @BindView(R.id.expand_button) ImageView expandButton;
+
     @BindView(R.id.age_search) EditText ageField;
     @BindView(R.id.gender_search) RadioGroup genderField;
     @BindView(R.id.event_search) Spinner eventField;
+    @BindView(R.id.search_min_price) EditText minPriceField;
+    @BindView(R.id.search_max_price) EditText maxPriceField;
+
     @BindView(R.id.age_clear) ImageView clearAge;
     @BindView(R.id.toggle_panel) View toggle;
 
     private boolean isExpanded = false, isQueryChanged = false;
-    private String selectedGender = null, selectedAge = null, selectedEvent = null;
+    private String selectedGender, selectedAge, selectedEvent, minPrice, maxPrice;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,7 +106,7 @@ public class FindGiftFragment extends ApiFragment {
 
     @Override
     protected void makeRequest() {
-        apiClient.getGifts(selectedAge, selectedGender, selectedEvent)
+        apiClient.getGifts(selectedAge, selectedGender, selectedEvent, minPrice, maxPrice)
                 .enqueue(new BaseCallback<List<Gift>>(container, progressBar) {
                     @Override
                     public void onResponse(Call<List<Gift>> call, Response<List<Gift>> response) {
@@ -166,6 +172,15 @@ public class FindGiftFragment extends ApiFragment {
             }
         });
 
+        ageField.addTextChangedListener(new QueryChangeWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().length() > 0) clearAge.setVisibility(View.VISIBLE);
+                else clearAge.setVisibility(View.GONE);
+                super.afterTextChanged(editable);
+            }
+        });
+
         eventField.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -178,8 +193,10 @@ public class FindGiftFragment extends ApiFragment {
             }
         });
 
+
         slidePanel.setListener(new MainExpandableListener());
-        ageField.addTextChangedListener(new AgeSearchWatcher());
+        minPriceField.addTextChangedListener(new QueryChangeWatcher());
+        maxPriceField.addTextChangedListener(new QueryChangeWatcher());
     }
 
     private class MainExpandableListener implements ExpandableLayoutListener {
@@ -200,7 +217,7 @@ public class FindGiftFragment extends ApiFragment {
         @Override
         public void onPreClose() {
             fab.show();
-            hideKeyboard(parent);
+            hideKeyboard(parent.getCurrentFocus());
             if (isQueryChanged) {
                 int id = genderField.getCheckedRadioButtonId();
                 int position = eventField.getSelectedItemPosition();
@@ -208,6 +225,12 @@ public class FindGiftFragment extends ApiFragment {
                 selectedGender = SearchUtils.getGenderFromButtonId(id);
                 selectedAge = ageField.getText().toString();
                 selectedEvent = SearchUtils.getEventFromSelectedPosition(parent, position);
+
+                String minPriceInput = WidgetUtils.getTextFromEditText(minPriceField);
+                String maxPriceInput = WidgetUtils.getTextFromEditText(maxPriceField);
+
+                minPrice = CurrenciesManager.convertPreferredToEUR(minPriceInput);
+                maxPrice = CurrenciesManager.convertPreferredToEUR(maxPriceInput);
 
                 refreshData();
 
@@ -224,20 +247,11 @@ public class FindGiftFragment extends ApiFragment {
         }
     }
 
-    private class AgeSearchWatcher implements TextWatcher {
+    private class QueryChangeWatcher extends BaseTextWathcer {
 
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
+        @CallSuper
         @Override
         public void afterTextChanged(Editable editable) {
-            if (editable.toString().length() > 0) clearAge.setVisibility(View.VISIBLE);
-            else clearAge.setVisibility(View.GONE);
             isQueryChanged = true;
         }
     }

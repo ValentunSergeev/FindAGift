@@ -56,7 +56,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             client.getExchangeRates(priceType).enqueue(new Callback<ExchangeRates>() {
                 @Override
                 public void onResponse(Call<ExchangeRates> call, Response<ExchangeRates> response) {
-                    CurrenciesManager.setExchangeRates(response.body());
+                    CurrenciesManager.setPreferredCurrencyRates(response.body());
                     Snackbar.make(container, R.string.currency_changed, Toast.LENGTH_SHORT).setDuration(500)
                             .show();
                 }

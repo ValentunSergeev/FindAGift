@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import static android.text.TextUtils.isEmpty;
+
 public class WidgetUtils {
     public static void colorizeTextWidget(TextView btn, @ColorRes int colorRes) {
         int color = ContextCompat.getColor(btn.getContext(), colorRes);
@@ -27,6 +29,7 @@ public class WidgetUtils {
     }
 
     public static void hideKeyboard(View view) {
+        if (view == null) return;
         InputMethodManager inputMethodManager =(InputMethodManager)view.getContext()
                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -38,11 +41,12 @@ public class WidgetUtils {
 
     public static int getIntFromEditText(EditText editText, int defaultValue) {
         String text = getTextFromEditText(editText);
-        if (TextUtils.isEmpty(text)) return defaultValue;
+        if (isEmpty(text)) return defaultValue;
         return Integer.parseInt(text);
     }
 
     public static String getTextFromEditText(EditText editText) {
-        return editText.getText().toString();
+        String text = editText.getText().toString();
+        return isEmpty(text) ? null : text;
     }
 }

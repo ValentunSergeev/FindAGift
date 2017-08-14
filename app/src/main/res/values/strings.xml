@@ -43,6 +43,7 @@
     <string name="event_type_any">Any</string>
 
     <string name="search_params">Search params</string>
+    <string name="search_price">Price</string>
     <string name="menu_find_gift">Find Gift</string>
     <string name="menu_stars">Stars</string>
     <string name="menu_settings">Settings</string>
