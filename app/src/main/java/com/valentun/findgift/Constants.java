@@ -38,10 +38,10 @@ public class Constants {
 
     public static class Convert {
         public static final int SMALL_PRICE_THRESHOLD = 10;
-        public static final int MIDDLE_PRICE_THRESHOLD = 100;
-        public static final int MIDDLE_ROUND_COEFFICIENT = 10;
-        public static final int BIG_PRICE_THRESHOLD = 1000;
-        public static final int BIG_ROUND_COEFFICIENT = 100;
+//        public static final int MIDDLE_PRICE_THRESHOLD = 100;
+//        public static final int MIDDLE_ROUND_COEFFICIENT = 10;
+//        public static final int BIG_PRICE_THRESHOLD = 1000;
+//        public static final int BIG_ROUND_COEFFICIENT = 100;
         public static final String EUR = "EUR";
     }
 
@@ -52,8 +52,8 @@ public class Constants {
     public static final String CLIENT_KEY = "Client";
     public static final String UID_KEY = "Uid";
 
-    public static final int IMAGE_WIDTH_PX = 854;
-    public static final int IMAGE_HEIGHT_PX = 480;
+    public static final int IMAGE_WIDTH_PX = 352;
+    public static final int IMAGE_HEIGHT_PX = 240;
 
     public static final float ONE_THOUSAND = 1000f;
     public static final float ONE_MILLION = 1000000f;
