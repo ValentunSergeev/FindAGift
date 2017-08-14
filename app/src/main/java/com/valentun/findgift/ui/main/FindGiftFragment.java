@@ -71,6 +71,11 @@ public class FindGiftFragment extends ApiFragment {
     }
 
     @Override
+    protected CharSequence getTitle() {
+        return getString(R.string.title_find_gift);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 

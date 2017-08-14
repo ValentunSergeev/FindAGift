@@ -31,6 +31,9 @@ public class Constants {
 
         public static final int MIN_AGE_VALUE = 0;
         public static final int MAX_AGE_VALUE = 150;
+
+        public static final String THOUSAND_POSTFIX = "K";
+        public static final String MILLION_POSTIFX = "M";
     }
 
     public static class Convert {
@@ -42,6 +45,7 @@ public class Constants {
         public static final String EUR = "EUR";
     }
 
+
     public static final int FAB_SCROLL_THRESHOLD = 5;
 
     public static final String ACCESS_TOKEN_KEY = "Access-Token";
@@ -50,6 +54,9 @@ public class Constants {
 
     public static final int IMAGE_WIDTH_PX = 854;
     public static final int IMAGE_HEIGHT_PX = 480;
+
+    public static final float ONE_THOUSAND = 1000f;
+    public static final float ONE_MILLION = 1000000f;
 
     public static final String[] PERMISSIONS = {android.Manifest.permission.READ_EXTERNAL_STORAGE};
 }

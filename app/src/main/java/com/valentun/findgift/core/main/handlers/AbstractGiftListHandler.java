@@ -43,8 +43,8 @@ public abstract class AbstractGiftListHandler {
 
     public abstract void onFabClicked(View view);
 
-    private void updateRateView(int rating) {
-        binding.itemRate.setText(String.valueOf(rating));
+    private void updateRateView(String rating) {
+        binding.itemRate.setText(rating);
     }
 
     private void setLikedState() {
@@ -65,7 +65,7 @@ public abstract class AbstractGiftListHandler {
                     public void onResponse(Call<Gift> call, Response<Gift> response) {
                         if (response.isSuccessful()) {
                             gift.updateLikeState(response.body());
-                            updateRateView(gift.getRating());
+                            updateRateView(gift.getStringRating());
 
                             setLikedState();
                         } else {
@@ -83,7 +83,7 @@ public abstract class AbstractGiftListHandler {
                         if (response.isSuccessful()) {
                             gift.updateLikeState(response.body());
 
-                            updateRateView(gift.getRating());
+                            updateRateView(gift.getStringRating());
                             setDislikedState();
                         } else {
                             showDefaultErrorMessage();

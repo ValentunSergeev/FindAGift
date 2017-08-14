@@ -28,7 +28,11 @@ public abstract class ApiFragment extends Fragment implements SwipeRefreshLayout
         container = parent.findViewById(R.id.main_fragment_container);
 
         setRetainInstance(true);
+
+        parent.setTitle(getTitle());
     }
+
+    protected abstract CharSequence getTitle();
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

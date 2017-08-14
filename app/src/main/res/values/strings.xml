@@ -53,11 +53,14 @@
     <string name="empty_list_title">No gifts found</string>
     <string name="empty_starred_description">You have not starred any gifts yet.</string>
     <string name="default_failure_message">Can not perform action. Check your internet connection and try again</string>
-    <string name="unstar_success">Gift was successfully removed from stars list</string>
-    <string name="star_success">Gift was successfully added to your stars list</string>
+    <string name="unstar_success">Gift was removed from stars list</string>
+    <string name="star_success">Gift was added to your stars list</string>
     <string name="not_success_default">Something went wrong. Please try again</string>
     <string name="internet_error_title">Can not connect to server</string>
     <string name="internet_error_message">Can not connect to server, check your internet connection and try again.</string>
     <string name="currency_changed">Currency changed</string>
-    <string name="new_gift_currency">Preparing...</string>
+    <string name="new_gift_currency">Preparing…</string>
+    <string name="title_find_gift">Find Gift</string>
+    <string name="title_starred">Starred Gifts</string>
+    <string name="title_settings">Settings</string>
 </resources>

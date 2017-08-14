@@ -1,10 +1,18 @@
 package com.valentun.findgift.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.valentun.findgift.Constants;
+
+import java.text.DecimalFormat;
+
+import static com.valentun.findgift.Constants.Firebase;
+import static com.valentun.findgift.Constants.GIFT_PARAMS.MILLION_POSTIFX;
+import static com.valentun.findgift.Constants.GIFT_PARAMS.THOUSAND_POSTFIX;
+import static com.valentun.findgift.Constants.ONE_MILLION;
+import static com.valentun.findgift.Constants.ONE_THOUSAND;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -37,11 +45,25 @@ public class Gift {
     @JsonProperty("liked")
     private boolean isLiked;
 
+    @JsonIgnore
+    private static final DecimalFormat rateFormat = new DecimalFormat("#.#");
+
     public static String generateImageName() {
-        return "GIFT_" + System.currentTimeMillis() + Constants.Firebase.IMAGE_FORMAT;
+        return "GIFT_" + System.currentTimeMillis() + Firebase.IMAGE_FORMAT;
     }
 
     public String getStringRating() {
+        String result = "";
+        if (rating == 0) return result;
+        if (rating >= ONE_THOUSAND) {
+            if (rating >= ONE_MILLION) {
+                return rateFormat.format(rating / ONE_MILLION) + MILLION_POSTIFX;
+            }
+            if (rating >= 100 * ONE_THOUSAND) {
+                return rateFormat.format((int)(rating / ONE_THOUSAND)) + THOUSAND_POSTFIX;
+            }
+            return rateFormat.format(rating / ONE_THOUSAND) + THOUSAND_POSTFIX;
+        }
         return String.valueOf(rating);
     }
 

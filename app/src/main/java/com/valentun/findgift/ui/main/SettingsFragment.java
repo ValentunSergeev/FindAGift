@@ -1,5 +1,6 @@
 package com.valentun.findgift.ui.main;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -28,19 +29,23 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private String previousValue;
     private SharedPreferences preferences;
     private View container;
+    private Activity parent;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.settings);
+
+        parent = getActivity();
         preferences = getPreferenceScreen().getSharedPreferences();
 
         findPreference(PRICE_TYPE_KEY).setOnPreferenceChangeListener(this);
         preferences.registerOnSharedPreferenceChangeListener(this);
 
-        container = getActivity().findViewById(R.id.main_fragment_container);
+        container = parent.findViewById(R.id.main_fragment_container);
 
+        parent.setTitle(getString(R.string.title_settings));
 
         String initialCurrency = preferences.getString(PRICE_TYPE_KEY, DEFAULT_PRICE_TYPE);
         getPreferenceScreen().getPreference(0).setSummary(initialCurrency);
@@ -78,7 +83,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void showErrorDialog(){
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(parent)
                 .setCancelable(false)
                 .setTitle(R.string.internet_error_title)
                 .setMessage(R.string.internet_error_message)

@@ -34,6 +34,11 @@ public class StarredFragment extends ApiFragment implements AbstractGiftAdapter.
     }
 
     @Override
+    protected CharSequence getTitle() {
+        return getString(R.string.title_starred);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
