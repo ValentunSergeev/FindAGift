@@ -14,7 +14,11 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.valentun.findgift.Constants.Convert.ROUND_COEFFICIENT;
+import static com.valentun.findgift.Constants.Convert.BIG_PRICE_THRESHOLD;
+import static com.valentun.findgift.Constants.Convert.BIG_ROUND_COEFFICIENT;
+import static com.valentun.findgift.Constants.Convert.EUR;
+import static com.valentun.findgift.Constants.Convert.MIDDLE_PRICE_THRESHOLD;
+import static com.valentun.findgift.Constants.Convert.MIDDLE_ROUND_COEFFICIENT;
 import static com.valentun.findgift.Constants.Convert.SMALL_PRICE_THRESHOLD;
 import static com.valentun.findgift.Constants.PREFERENCES.DEFAULT_PRICE_TYPE;
 import static com.valentun.findgift.Constants.PREFERENCES.PRICE_TYPE_KEY;
@@ -24,7 +28,7 @@ public class CurrenciesManager {
     private static String[] priceValues;
     private static List<String> priceKeys;
     private static ExchangeRates exchangeRates;
-
+    private static ExchangeRates EURRates;
     public static void with(Context context) {
         CurrenciesManager.appContext = context.getApplicationContext();
         String[] priceKeysArr = context.getResources().getStringArray(R.array.money_types_keys);
@@ -46,12 +50,27 @@ public class CurrenciesManager {
     }
 
     public static String convertPriceToPreferred(Gift gift) {
-        if (gift.getPriceType().equals(exchangeRates.base)) return formatPrice(gift.getDoublePrice());
+        if (exchangeRates.base.equals(EUR)) return formatPrice(gift.getDoublePrice());
+
+        try {
+            Field field = ExchangeRates.Rates.class.getField(EUR);
+
+            double coefficient = field.getDouble(exchangeRates.rates);
+            double result = gift.getDoublePrice() / coefficient;
+
+            return formatPrice(result);
+        } catch (Exception e) {
+            return formatPrice(gift.getDoublePrice());
+        }
+    }
+
+    public static String covertPriceToEUR(Gift gift) {
+        if (gift.getPriceType().equals(EURRates.base)) return formatPrice(gift.getDoublePrice());
 
         try {
             Field field = ExchangeRates.Rates.class.getField(gift.getPriceType());
 
-            double coefficient = field.getDouble(exchangeRates.rates);
+            double coefficient = field.getDouble(EURRates.rates);
             double result = gift.getDoublePrice() / coefficient;
 
             return formatPrice(result);
@@ -64,8 +83,11 @@ public class CurrenciesManager {
         DecimalFormat format;
 
         if (result > SMALL_PRICE_THRESHOLD) {
-            result = result - result % ROUND_COEFFICIENT;
             format = new DecimalFormat("#");
+            if (result > MIDDLE_PRICE_THRESHOLD)
+                result -= result % MIDDLE_ROUND_COEFFICIENT;
+            if (result > BIG_PRICE_THRESHOLD)
+                result -= result % BIG_ROUND_COEFFICIENT;
         } else {
             format = new DecimalFormat("#.#");
         }
@@ -82,5 +104,13 @@ public class CurrenciesManager {
 
     public static void setExchangeRates(ExchangeRates exchangeRates) {
         CurrenciesManager.exchangeRates = exchangeRates;
+    }
+
+    public static void setEURRates(ExchangeRates EURRates) {
+        CurrenciesManager.EURRates = EURRates;
+    }
+
+    public static boolean isEURRatePresent() {
+        return EURRates != null;
     }
 }

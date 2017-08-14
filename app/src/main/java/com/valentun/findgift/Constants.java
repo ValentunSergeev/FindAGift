@@ -35,7 +35,11 @@ public class Constants {
 
     public static class Convert {
         public static final int SMALL_PRICE_THRESHOLD = 10;
-        public static final int ROUND_COEFFICIENT = 10;
+        public static final int MIDDLE_PRICE_THRESHOLD = 100;
+        public static final int MIDDLE_ROUND_COEFFICIENT = 10;
+        public static final int BIG_PRICE_THRESHOLD = 1000;
+        public static final int BIG_ROUND_COEFFICIENT = 100;
+        public static final String EUR = "EUR";
     }
 
     public static final int FAB_SCROLL_THRESHOLD = 5;

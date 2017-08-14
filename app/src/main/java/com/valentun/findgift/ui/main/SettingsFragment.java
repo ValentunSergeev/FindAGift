@@ -41,6 +41,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         container = getActivity().findViewById(R.id.main_fragment_container);
 
+
+        String initialCurrency = preferences.getString(PRICE_TYPE_KEY, DEFAULT_PRICE_TYPE);
+        getPreferenceScreen().getPreference(0).setSummary(initialCurrency);
+
         setRetainInstance(true);
     }
 

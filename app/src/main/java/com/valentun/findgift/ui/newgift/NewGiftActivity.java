@@ -27,7 +27,11 @@ import com.google.firebase.storage.UploadTask;
 import com.valentun.findgift.Constants;
 import com.valentun.findgift.Constants.GIFT_PARAMS;
 import com.valentun.findgift.R;
+import com.valentun.findgift.models.ExchangeRates;
 import com.valentun.findgift.models.Gift;
+import com.valentun.findgift.network.ExchangeRatesClient;
+import com.valentun.findgift.network.RetrofitClientFactory;
+import com.valentun.findgift.persistence.CurrenciesManager;
 import com.valentun.findgift.ui.abstracts.ApiActivity;
 import com.valentun.findgift.utils.BitmapUtils;
 import com.valentun.findgift.utils.SearchUtils;
@@ -52,17 +56,26 @@ public class NewGiftActivity extends ApiActivity {
     private static final int GALLERY_REQUEST = 1339;
     private static final int PERMISSIONS_REQUEST_CODE = 1;
 
-    @BindView(R.id.new_image) ImageView newImage;
-    @BindView(R.id.new_name) EditText newName;
-    @BindView(R.id.new_description) EditText newDescription;
-    @BindView(R.id.new_price) EditText newPrice;
-    @BindView(R.id.new_min_age) EditText newMinAge;
-    @BindView(R.id.new_max_age) EditText newMaxAge;
+    @BindView(R.id.new_image)
+    ImageView newImage;
+    @BindView(R.id.new_name)
+    EditText newName;
+    @BindView(R.id.new_description)
+    EditText newDescription;
+    @BindView(R.id.new_price)
+    EditText newPrice;
+    @BindView(R.id.new_min_age)
+    EditText newMinAge;
+    @BindView(R.id.new_max_age)
+    EditText newMaxAge;
 
-    @BindView(R.id.money_type) Spinner newPriceType;
-    @BindView(R.id.new_event) Spinner newEventType;
+    @BindView(R.id.money_type)
+    Spinner newPriceType;
+    @BindView(R.id.new_event)
+    Spinner newEventType;
 
-    @BindView(R.id.new_gender) RadioGroup newGender;
+    @BindView(R.id.new_gender)
+    RadioGroup newGender;
 
     private Bitmap image;
     private int[] eventTypes;
@@ -71,12 +84,16 @@ public class NewGiftActivity extends ApiActivity {
     private String imageURL;
     private Gift gift;
 
+    private ExchangeRatesClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_gift);
 
         ButterKnife.bind(this);
+
+        client = RetrofitClientFactory.getExchangeRatesClient();
 
         priceTypes = getResources().getStringArray(R.array.money_types_keys);
         eventTypes = getResources().getIntArray(R.array.event_type_keys);
@@ -101,6 +118,7 @@ public class NewGiftActivity extends ApiActivity {
             return;
         }
 
+
         createRequestBodyObject();
 
         if (isEmpty(gift.getName(), gift.getPrice(), gift.getDescription())) {
@@ -113,7 +131,8 @@ public class NewGiftActivity extends ApiActivity {
         if (imageURL == null) {
             uploadImage();
         } else {
-            uploadGift();
+            if (CurrenciesManager.isEURRatePresent()) uploadGift();
+            else getCurrency();
         }
     }
 
@@ -153,22 +172,24 @@ public class NewGiftActivity extends ApiActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri uri = taskSnapshot.getDownloadUrl();
-                showProgress(getString(R.string.create_gift_message));
                 imageURL = uri.toString();
                 gift.setImageUrl(imageURL);
-                uploadGift();
+                if (CurrenciesManager.isEURRatePresent()) uploadGift();
+                else getCurrency();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressDialog.dismiss();
-                Snackbar.make(container, R.string.image_upload_error, Snackbar.LENGTH_SHORT).show();
+                showSnackbarMessage(R.string.image_upload_error);
             }
         });
 
     }
 
     private void uploadGift() {
+        showProgress(getString(R.string.create_gift_message));
+        gift.setPrice(CurrenciesManager.covertPriceToEUR(gift));
         apiClient.createGift(gift).enqueue(new ApiCallback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -179,7 +200,24 @@ public class NewGiftActivity extends ApiActivity {
 
                     finish();
                 } else {
+                    progressDialog.dismiss();
                     showSnackbarMessage(getString(R.string.create_gift_error, response.errorBody()));
+                }
+            }
+        });
+    }
+
+    private void getCurrency() {
+        showProgress(getString(R.string.new_gift_currency));
+        client.getExchangeRates(Constants.Convert.EUR).enqueue(new ApiCallback<ExchangeRates>() {
+            @Override
+            public void onResponse(Call<ExchangeRates> call, Response<ExchangeRates> response) {
+                if (response.isSuccessful()) {
+                    CurrenciesManager.setEURRates(response.body());
+                    uploadGift();
+                } else {
+                    progressDialog.dismiss();
+                    showDefaultErrorMessage();
                 }
             }
         });

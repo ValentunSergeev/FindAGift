@@ -58,4 +58,5 @@
     <string name="internet_error_title">Can not connect to server</string>
     <string name="internet_error_message">Can not connect to server, check your internet connection and try again.</string>
     <string name="currency_changed">Currency changed</string>
+    <string name="new_gift_currency">Preparing...</string>
 </resources>
