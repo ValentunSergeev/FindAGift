@@ -9,14 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.valentun.findgift.GiftApplication;
 import com.valentun.findgift.R;
 import com.valentun.findgift.core.main.adapters.AbstractGiftAdapter;
 import com.valentun.findgift.core.main.adapters.StartGiftAdapter;
 import com.valentun.findgift.models.Gift;
+import com.valentun.findgift.network.APIClient;
 import com.valentun.findgift.network.callback.BaseCallback;
 import com.valentun.findgift.ui.abstracts.ApiFragment;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +31,14 @@ public class StarredFragment extends ApiFragment implements AbstractGiftAdapter.
     @BindView(R.id.starred_progress) ProgressBar progressBar;
     @BindView(R.id.starred_recycler) RecyclerView recyclerView;
     @BindView(R.id.starred_placeholder) View placeholder;
+
+    @Inject APIClient apiClient;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        GiftApplication.getAppComponent().inject(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

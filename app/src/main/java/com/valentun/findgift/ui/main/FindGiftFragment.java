@@ -22,10 +22,12 @@ import android.widget.Spinner;
 
 import com.github.aakira.expandablelayout.ExpandableLayoutListener;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
+import com.valentun.findgift.GiftApplication;
 import com.valentun.findgift.R;
 import com.valentun.findgift.core.main.adapters.MainGiftAdapter;
 import com.valentun.findgift.core.main.listeners.BaseTextWathcer;
 import com.valentun.findgift.models.Gift;
+import com.valentun.findgift.network.APIClient;
 import com.valentun.findgift.network.callback.BaseCallback;
 import com.valentun.findgift.persistence.CurrenciesManager;
 import com.valentun.findgift.ui.abstracts.ApiFragment;
@@ -34,6 +36,8 @@ import com.valentun.findgift.utils.SearchUtils;
 import com.valentun.findgift.utils.WidgetUtils;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,6 +69,8 @@ public class FindGiftFragment extends ApiFragment {
     private boolean isExpanded = false, isQueryChanged = false;
     private String selectedGender, selectedAge, selectedEvent, minPrice, maxPrice;
 
+    @Inject APIClient client;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_find_gift, container, false);
@@ -73,6 +79,13 @@ public class FindGiftFragment extends ApiFragment {
     @Override
     protected CharSequence getTitle() {
         return getString(R.string.title_find_gift);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        GiftApplication.getAppComponent().inject(this);
+
     }
 
     @Override
@@ -111,7 +124,7 @@ public class FindGiftFragment extends ApiFragment {
 
     @Override
     protected void makeRequest() {
-        apiClient.getGifts(selectedAge, selectedGender, selectedEvent, minPrice, maxPrice)
+        client.getGifts(selectedAge, selectedGender, selectedEvent, minPrice, maxPrice)
                 .enqueue(new BaseCallback<List<Gift>>(container, progressBar) {
                     @Override
                     public void onResponse(Call<List<Gift>> call, Response<List<Gift>> response) {

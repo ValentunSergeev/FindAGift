@@ -11,11 +11,13 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
+import com.valentun.findgift.GiftApplication;
 import com.valentun.findgift.R;
 import com.valentun.findgift.models.ExchangeRates;
 import com.valentun.findgift.network.ExchangeRatesClient;
-import com.valentun.findgift.network.RetrofitClientFactory;
 import com.valentun.findgift.persistence.CurrenciesManager;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,6 +28,8 @@ import static com.valentun.findgift.Constants.PREFERENCES.PRICE_TYPE_KEY;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener {
 
+    @Inject ExchangeRatesClient client;
+
     private String previousValue;
     private SharedPreferences preferences;
     private View container;
@@ -34,6 +38,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GiftApplication.getAppComponent().inject(this);
 
         addPreferencesFromResource(R.xml.settings);
 
@@ -57,7 +63,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
         if (key.equals(PRICE_TYPE_KEY)) {
             String priceType = sharedPreferences.getString(key, DEFAULT_PRICE_TYPE);
-            ExchangeRatesClient client = RetrofitClientFactory.getExchangeRatesClient();
             client.getExchangeRates(priceType).enqueue(new Callback<ExchangeRates>() {
                 @Override
                 public void onResponse(Call<ExchangeRates> call, Response<ExchangeRates> response) {

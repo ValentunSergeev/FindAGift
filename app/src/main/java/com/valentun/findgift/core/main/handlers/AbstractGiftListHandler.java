@@ -4,13 +4,15 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.valentun.findgift.GiftApplication;
 import com.valentun.findgift.R;
 import com.valentun.findgift.core.main.adapters.AbstractGiftAdapter;
 import com.valentun.findgift.databinding.GiftRecyclerItemBinding;
 import com.valentun.findgift.models.Gift;
 import com.valentun.findgift.network.APIClient;
-import com.valentun.findgift.network.RetrofitClientFactory;
 import com.valentun.findgift.network.callback.BaseCallback;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -19,16 +21,17 @@ import retrofit2.Response;
 public abstract class AbstractGiftListHandler {
     protected GiftRecyclerItemBinding binding;
     protected Gift gift;
-    protected APIClient client;
+    @Inject APIClient client;
     protected Context context;
     protected AbstractGiftAdapter adapter;
     protected View root;
 
     public AbstractGiftListHandler(GiftRecyclerItemBinding binding, Gift gift, AbstractGiftAdapter adapter) {
+        GiftApplication.getAppComponent().inject(this);
+
         this.binding = binding;
         this.gift = gift;
         this.adapter = adapter;
-        client = RetrofitClientFactory.getApiClient();
         root = binding.getRoot();
         context = root.getContext();
     }

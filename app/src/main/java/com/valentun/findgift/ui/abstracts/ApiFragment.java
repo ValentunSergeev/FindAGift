@@ -10,11 +10,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
 import com.valentun.findgift.R;
-import com.valentun.findgift.network.APIClient;
-import com.valentun.findgift.network.RetrofitClientFactory;
 
 public abstract class ApiFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener  {
-    protected APIClient apiClient;
     protected Activity parent;
     protected View container;
     protected SwipeRefreshLayout refreshLayout;
@@ -24,7 +21,6 @@ public abstract class ApiFragment extends Fragment implements SwipeRefreshLayout
         super.onCreate(savedInstanceState);
 
         parent = getActivity();
-        apiClient = RetrofitClientFactory.getApiClient();
         container = parent.findViewById(R.id.main_fragment_container);
 
         setRetainInstance(true);

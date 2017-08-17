@@ -7,12 +7,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.valentun.findgift.network.APIClient;
-import com.valentun.findgift.network.RetrofitClientFactory;
 import com.valentun.findgift.network.callback.BaseCallback;
 
 public abstract class ApiActivity extends AppCompatActivity {
-    protected APIClient apiClient;
     protected View container;
     protected ProgressDialog progressDialog;
 
@@ -21,7 +18,6 @@ public abstract class ApiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         container = findViewById(android.R.id.content);
-        apiClient = RetrofitClientFactory.getApiClient();
 
         setUpProgress();
     }

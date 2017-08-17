@@ -9,15 +9,17 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.valentun.findgift.Constants;
+import com.valentun.findgift.GiftApplication;
 import com.valentun.findgift.R;
 import com.valentun.findgift.models.AuthModel;
 import com.valentun.findgift.network.APIClient;
-import com.valentun.findgift.network.RetrofitClientFactory;
 import com.valentun.findgift.network.callback.BaseCallback;
 import com.valentun.findgift.persistence.SessionManager;
 import com.valentun.findgift.ui.abstracts.ApiActivity;
 import com.valentun.findgift.ui.main.MainActivity;
 import com.valentun.findgift.utils.WidgetUtils;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +35,7 @@ public class AuthActivity extends ApiActivity {
     @BindView(R.id.register_submit) Button registerSubmit;
     @BindView(R.id.login_submit) Button loginSubmit;
 
-    private APIClient client;
+    @Inject APIClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +43,7 @@ public class AuthActivity extends ApiActivity {
         setContentView(R.layout.activity_auth);
 
         ButterKnife.bind(this);
-
-        client = RetrofitClientFactory.getApiClient();
+        GiftApplication.getAppComponent().inject(this);
 
         WidgetUtils.colorizeTextWidget(registerSubmit, R.color.accent);
         WidgetUtils.colorizeTextWidget(loginSubmit, R.color.indigo);

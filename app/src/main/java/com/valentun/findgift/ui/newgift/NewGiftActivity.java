@@ -26,10 +26,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.valentun.findgift.Constants;
 import com.valentun.findgift.Constants.GIFT_PARAMS;
+import com.valentun.findgift.GiftApplication;
 import com.valentun.findgift.R;
 import com.valentun.findgift.models.Gift;
-import com.valentun.findgift.network.ExchangeRatesClient;
-import com.valentun.findgift.network.RetrofitClientFactory;
+import com.valentun.findgift.network.APIClient;
 import com.valentun.findgift.persistence.CurrenciesManager;
 import com.valentun.findgift.ui.abstracts.ApiActivity;
 import com.valentun.findgift.utils.BitmapUtils;
@@ -37,6 +37,8 @@ import com.valentun.findgift.utils.SearchUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,6 +69,8 @@ public class NewGiftActivity extends ApiActivity {
 
     @BindView(R.id.new_gender) RadioGroup newGender;
 
+    @Inject APIClient apiClient;
+
     private Bitmap image;
     private int[] eventTypes;
     private String[] priceTypes;
@@ -74,7 +78,6 @@ public class NewGiftActivity extends ApiActivity {
     private String imageURL;
     private Gift gift;
 
-    private ExchangeRatesClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +85,7 @@ public class NewGiftActivity extends ApiActivity {
         setContentView(R.layout.activity_new_gift);
 
         ButterKnife.bind(this);
-
-        client = RetrofitClientFactory.getExchangeRatesClient();
+        GiftApplication.getAppComponent().inject(this);
 
         priceTypes = getResources().getStringArray(R.array.money_types_keys);
         eventTypes = getResources().getIntArray(R.array.event_type_keys);
